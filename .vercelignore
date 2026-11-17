@@ -1,0 +1,11 @@
+.venv
+__pycache__
+data
+models
+results
+mossline_extracted
+*.docx
+*.py
+*.pyc
+requirements.txt
+README.md

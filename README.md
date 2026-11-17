@@ -8,7 +8,8 @@
 ---
 
 ## 📌 Links to Deliverables
-* 🌐 **Live Deployed Web Application**: [https://harry-ai-classification.streamlit.app](https://harry-ai-classification.streamlit.app)
+* 🌐 **Live Deployed Web Application (Vercel)**: [https://assignment1classification.vercel.app](https://assignment1classification.vercel.app)
+* 🌐 **Streamlit Mirror**: [https://harry-ai-classification.streamlit.app](https://harry-ai-classification.streamlit.app)
 * 📁 **GitHub Source Code Repository**: [https://github.com/emmanuel-asante/applied-ai-classification](https://github.com/emmanuel-asante/applied-ai-classification)
 * 📄 **Formal Academic Report**: `Emmanuel_Asante_PU092301_Assignment1.docx`
 
