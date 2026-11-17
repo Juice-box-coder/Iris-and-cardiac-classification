@@ -43,14 +43,14 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Load and render the full Mossline Web Application
+# Load and render the full Mossline Web Application (v2.1 - Inlined Base64 Assets)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INDEX_PATH = os.path.join(BASE_DIR, "index.html")
 
 if os.path.exists(INDEX_PATH):
     with open(INDEX_PATH, "r", encoding="utf-8") as f:
         html_content = f.read()
-    # Embed the entire Mossline web application into the full browser viewport
+    # Embed the entire web application into the full browser viewport
     components.html(html_content, height=12000, scrolling=True)
 else:
     st.error("index.html not found.")
