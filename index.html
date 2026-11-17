@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="preload" as="image" href="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261106_031618_8ce6dca1-972d-429d-8d13-bf0691c37848.png&w=2400&q=88">
+<link rel="preload" as="image" href="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261106_025630_9a37a1e0-2547-4973-8160-c75205993914.png&w=1400&q=82">
 
 <style>
 :root {
@@ -35,8 +37,10 @@ html, body {
   font-family: var(--sans);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+main {
+  overflow-x: clip;
 }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
@@ -186,8 +190,18 @@ nav {
 .talk:hover .talk-sq { transform: translateX(3px); }
 
 /* Scroll Story Stage (Perfect 350vh continuous cinematic pacing) */
-#story { position: relative; height: 350vh; }
-.stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #dfe3e0; }
+#story { position: relative; height: 350vh; z-index: 1; }
+.stage {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #dfe3e0;
+  will-change: transform;
+}
 .cam { position: absolute; inset: -9% -3% -3%; will-change: transform; }
 #cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .plate { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
@@ -607,7 +621,7 @@ table.bench-table tr.champion td { font-weight: 700; color: #2e6008; background:
   <section id="story">
     <div class="stage">
       <div class="cam" id="camB">
-        <img class="plate" id="landPlate" src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261106_025630_9a37a1e0-2547-4973-8160-c75205993914.png&w=1400&q=82" alt="Sensor-mast landscape at eye level" referrerpolicy="no-referrer" style="opacity:0;">
+        <img class="plate" id="landPlate" src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261106_025630_9a37a1e0-2547-4973-8160-c75205993914.png&w=1400&q=82" alt="Sensor-mast landscape at eye level" referrerpolicy="no-referrer" style="opacity:1;">
         <img class="plate" id="plate" src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261106_031618_8ce6dca1-972d-429d-8d13-bf0691c37848.png&w=2400&q=88" alt="Floating moss island suspended in mist" referrerpolicy="no-referrer">
         <canvas id="cv" style="pointer-events:none;"></canvas>
         <div class="mist" aria-hidden="true"></div>
@@ -1178,6 +1192,7 @@ SOWUTUOM • ELEV 82M</pre>
   const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
   const story = document.getElementById('story');
+  const stage = story ? story.querySelector('.stage') : null;
   const camB = document.getElementById('camB');
   const camF = document.getElementById('camF');
   const plate = document.getElementById('plate');
@@ -1535,6 +1550,42 @@ SOWUTUOM • ELEV 82M</pre>
     modalResult.innerHTML = `<strong>Inference Executed:</strong> Target: ${mod.toUpperCase()}<br>Raw Vector: [${vec}]<br>Predicted Status: Verified with 0.96+ Confidence Score.<br>Deliverable: Emmanuel_Asante_PU092301_Assignment1.docx`;
   });
 
+  /* Bulletproof Viewport Pinning Engine */
+  function updateStagePin() {
+    if (!story || !stage) return;
+    const storyRect = story.getBoundingClientRect();
+    if (storyRect.top <= 0 && storyRect.bottom >= window.innerHeight) {
+      if (stage.style.position !== 'fixed') {
+        stage.style.position = 'fixed';
+        stage.style.top = '0px';
+        stage.style.left = '0px';
+        stage.style.width = '100%';
+        stage.style.height = '100vh';
+      }
+    } else if (storyRect.top > 0) {
+      if (stage.style.position !== 'absolute' || stage.style.top !== '0px') {
+        stage.style.position = 'absolute';
+        stage.style.top = '0px';
+        stage.style.bottom = 'auto';
+        stage.style.left = '0px';
+        stage.style.width = '100%';
+        stage.style.height = '100vh';
+      }
+    } else {
+      if (stage.style.position !== 'absolute' || stage.style.bottom !== '0px') {
+        stage.style.position = 'absolute';
+        stage.style.top = 'auto';
+        stage.style.bottom = '0px';
+        stage.style.left = '0px';
+        stage.style.width = '100%';
+        stage.style.height = '100vh';
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateStagePin, { passive: true });
+  updateStagePin();
+
   /* Main rAF Scroll Loop */
   let mx = 0, my = 0, sx = 0, sy = 0;
   let sp = 0;
@@ -1548,6 +1599,8 @@ SOWUTUOM • ELEV 82M</pre>
   function tick(now) {
     const dt = Math.min(64, Math.max(0, now - lastT));
     lastT = now;
+
+    updateStagePin();
 
     const maxScroll = Math.max(1, story.offsetHeight - window.innerHeight);
     const p = clamp(-story.getBoundingClientRect().top / maxScroll);
@@ -1566,8 +1619,8 @@ SOWUTUOM • ELEV 82M</pre>
     const crossFade = seg(sp, .28, .52);
     plate.style.opacity = 1 - crossFade;
     plate.style.visibility = crossFade < 1 ? 'visible' : 'hidden';
-    landPlate.style.opacity = crossFade;
-    landPlate.style.visibility = crossFade > 0 ? 'visible' : 'hidden';
+    landPlate.style.opacity = 1;
+    landPlate.style.visibility = 'visible';
     camF.style.opacity = 1 - crossFade;
     camF.style.visibility = crossFade < 1 ? 'visible' : 'hidden';
 
