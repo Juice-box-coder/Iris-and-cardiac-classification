@@ -1,14 +1,15 @@
 """
 Assignment 1: Machine Learning Classification Systems
-Course: Applied AI / Machine Learning & Software Development
+Course: Applied AI / Machine Learning & Software Development (ISE 402)
 Lecturer: Mr. Harry Attieku-Boateng
-Student: Emmanuel Asante (ID: PU092301)
+Student: Emmanuel Asante (ID: PU092301 / PUIT23210016)
 Pentecost University - Faculty of Computing and Information Systems (FOCIS)
 
-High-Performance Google AI Studio & Mossline-Styled Scientific Inference Dashboard
-- Part A: Iris Botanical Multi-Class Neural Engine (Trained on data/iris.csv)
-- Part B: Cardiac Hemodynamic Risk Engine (Mandatory OneHotEncoder Pipeline)
-- Real-Time Telemetry, Glassmorphic HUD, Precision Sliders, and Correlated Visuals
+Google AI Studio // Mossline Scientific Inference & Biometric Deck
+- Part A: Iris Botanical Multi-Class Neural Engine (data/iris.csv, 150 specimens)
+- Part B: Cardiac Hemodynamic Risk Engine (Scikit-Learn OneHotEncoder Mandate)
+- Mossline Scrollytelling & 3D Interactive Telemetry Deck
+- Strictly Correlated Botanical & Clinical Pathology Imagery
 """
 
 import os
@@ -17,10 +18,11 @@ import joblib
 import numpy as np
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 
 # Configure Page
 st.set_page_config(
-    page_title="PU-AI // Living Planet & Clinical Classification Deck",
+    page_title="Mossline // PU-AI Living Planet & Clinical Inference",
     page_icon="🌿",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -33,47 +35,114 @@ st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
-    /* CSS Root Palette & Typography */
+    /* CSS Root Palette & Typography (Exact Mossline Tokens) */
     :root {
-        --ink: #070e09;
-        --ink2: #0f1c13;
-        --surface: #112015;
-        --surface-card: rgba(17, 34, 22, 0.72);
-        --surface-hover: rgba(25, 48, 32, 0.85);
+        --ink: #10291a;
+        --ink2: #2c4434;
+        --mist: #e7ebe8;
+        --paper: #f6f7f4;
         --lime: #c6f35c;
         --lime2: #a9dd3a;
-        --lime-dim: rgba(198, 243, 92, 0.12);
-        --line: rgba(198, 243, 92, 0.22);
-        --line-bright: rgba(198, 243, 92, 0.45);
-        --text-bright: #f0f7f2;
-        --text-dim: #98aba0;
+        --glass: rgba(244, 247, 243, 0.16);
+        --line: rgba(255, 255, 255, 0.28);
+        --sans: "Inter Tight", "Helvetica Neue", Arial, sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+        
+        /* Dark Deck Overrides */
+        --deck-bg: #0b1910;
+        --deck-surface: rgba(20, 42, 27, 0.78);
+        --deck-hover: rgba(30, 60, 39, 0.92);
+        --deck-border: rgba(198, 243, 92, 0.25);
+        --deck-border-bright: rgba(198, 243, 92, 0.6);
+        --deck-text: #f4f7f4;
+        --deck-text-dim: #9eb5a5;
         --danger: #ff5252;
-        --sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
-        --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
     }
 
     /* Global Dark Backdrop Override */
     .stApp {
-        background-color: var(--ink);
+        background-color: var(--deck-bg);
         background-image: 
-            radial-gradient(circle at 15% 15%, rgba(198, 243, 92, 0.05) 0%, transparent 40%),
-            radial-gradient(circle at 85% 85%, rgba(46, 125, 50, 0.08) 0%, transparent 45%);
-        color: var(--text-bright);
+            radial-gradient(ellipse 60% 50% at 20% 20%, rgba(198, 243, 92, 0.06), transparent 70%),
+            radial-gradient(ellipse 50% 40% at 80% 80%, rgba(44, 68, 52, 0.25), transparent 70%);
+        color: var(--deck-text);
         font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
     }
 
-    /* Top HUD Navigation Bar */
+    /* Mossline Precision Typography Utilities */
+    .mono {
+        font-family: var(--mono);
+        text-transform: uppercase;
+        letter-spacing: .14em;
+        font-size: 11px;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 22px;
+        padding: 0 9px;
+        background: var(--lime);
+        color: var(--ink);
+        border-radius: 3px;
+        font-family: var(--mono);
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .chip-dark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 22px;
+        padding: 0 9px;
+        background: rgba(198, 243, 92, 0.12);
+        color: var(--lime);
+        border: 1px solid var(--deck-border);
+        border-radius: 3px;
+        font-family: var(--mono);
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .chip-danger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 22px;
+        padding: 0 9px;
+        background: rgba(255, 82, 82, 0.2);
+        color: #ff5252;
+        border: 1px solid rgba(255, 82, 82, 0.4);
+        border-radius: 3px;
+        font-family: var(--mono);
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    /* Fixed Mossline Navigation Header */
     .moss-nav {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 16px 26px;
-        background: var(--surface-card);
-        border: 1px solid var(--line);
+        background: var(--deck-surface);
+        border: 1px solid var(--deck-border);
         border-radius: 12px;
-        backdrop-filter: blur(16px);
+        backdrop-filter: blur(18px);
         margin-bottom: 24px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
     }
 
     .moss-logo {
@@ -85,9 +154,9 @@ st.markdown("""
     .moss-title {
         font-family: var(--sans);
         font-weight: 700;
-        font-size: 19px;
+        font-size: 20px;
         letter-spacing: -0.02em;
-        color: var(--text-bright);
+        color: var(--deck-text);
     }
 
     .moss-subtitle {
@@ -98,73 +167,25 @@ st.markdown("""
         text-transform: uppercase;
     }
 
-    /* Precision Mono Chips */
-    .chip {
-        display: inline-flex;
-        align-items: center;
-        height: 22px;
-        padding: 0 9px;
-        background: var(--lime);
-        color: var(--ink);
-        border-radius: 3px;
-        font-family: var(--mono);
-        font-size: 10.5px;
-        font-weight: 700;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-    }
-
-    .chip-dark {
-        display: inline-flex;
-        align-items: center;
-        height: 22px;
-        padding: 0 9px;
-        background: var(--lime-dim);
-        color: var(--lime);
-        border: 1px solid var(--line);
-        border-radius: 3px;
-        font-family: var(--mono);
-        font-size: 10.5px;
-        font-weight: 600;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-    }
-
-    .chip-danger {
-        display: inline-flex;
-        align-items: center;
-        height: 22px;
-        padding: 0 9px;
-        background: rgba(255, 82, 82, 0.18);
-        color: #ff5252;
-        border: 1px solid rgba(255, 82, 82, 0.35);
-        border-radius: 3px;
-        font-family: var(--mono);
-        font-size: 10.5px;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-    }
-
-    /* Corner Bracket Scientific Card */
+    /* Glassmorphic Telemetry Cards */
     .glass-card {
         position: relative;
-        background: var(--surface-card);
-        border: 1px solid var(--line);
+        background: var(--deck-surface);
+        border: 1px solid var(--deck-border);
         border-radius: 12px;
         padding: 24px;
-        backdrop-filter: blur(18px);
+        backdrop-filter: blur(16px);
         margin-bottom: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-        transition: transform 0.25s ease, border-color 0.25s ease;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+        transition: transform 0.28s ease, border-color 0.28s ease;
     }
 
     .glass-card:hover {
         transform: translateY(-2px);
-        border-color: var(--line-bright);
+        border-color: var(--deck-border-bright);
     }
 
-    /* Live Pulsing Animations */
+    /* Live Animations */
     @keyframes heartbeat {
         0% { transform: scale(1); }
         14% { transform: scale(1.18); }
@@ -175,15 +196,20 @@ st.markdown("""
     }
 
     @keyframes pulse-lime {
-        0% { box-shadow: 0 0 0 0 rgba(198, 243, 92, 0.6); }
+        0% { box-shadow: 0 0 0 0 rgba(198, 243, 92, 0.7); }
         70% { box-shadow: 0 0 0 14px rgba(198, 243, 92, 0); }
         100% { box-shadow: 0 0 0 0 rgba(198, 243, 92, 0); }
     }
 
     @keyframes pulse-red {
-        0% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7); }
+        0% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.8); }
         70% { box-shadow: 0 0 0 14px rgba(255, 82, 82, 0); }
         100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
+    }
+
+    @keyframes spark-draw {
+        0% { stroke-dashoffset: 240; }
+        100% { stroke-dashoffset: 0; }
     }
 
     .pulse-heart {
@@ -200,28 +226,184 @@ st.markdown("""
         animation: pulse-red 1.8s infinite;
     }
 
+    .animated-sparkline {
+        stroke-dasharray: 240;
+        stroke-dashoffset: 0;
+        animation: spark-draw 2.5s ease-out forwards;
+    }
+
+    /* Mossline Telemetry Card */
+    .moss-telemetry-card {
+        padding: 18px;
+        border-radius: 10px;
+        background: rgba(40, 58, 44, 0.45);
+        border: 1px solid rgba(198, 243, 92, 0.28);
+        backdrop-filter: blur(16px);
+        color: #fff;
+        margin-bottom: 20px;
+    }
+
+    .moss-telemetry-card h4 {
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.2;
+        margin: 0;
+    }
+
+    .moss-telemetry-card .note {
+        font-family: var(--mono);
+        font-size: 9.5px;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        opacity: .75;
+        margin-top: 6px;
+    }
+
+    .moss-telemetry-card .big {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+        margin-top: 10px;
+    }
+
+    .moss-telemetry-card .big strong {
+        font-size: 42px;
+        font-weight: 600;
+        letter-spacing: -.04em;
+        line-height: 1;
+        color: var(--lime);
+    }
+
+    .moss-telemetry-card .delta {
+        background: var(--lime);
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: .1em;
+        padding: 3px 6px;
+        border-radius: 3px;
+        font-weight: 600;
+    }
+
+    /* Mossline 3D Tilting Solution Cards */
+    .sol-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 20px 0 28px 0;
+    }
+
+    .sol-card {
+        position: relative;
+        height: 240px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #142a1b;
+        color: #fff;
+        border: 1px solid var(--deck-border);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.3);
+        transition: transform 0.35s cubic-bezier(.2,.8,.2,1), border-color 0.35s ease;
+    }
+
+    .sol-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--lime);
+    }
+
+    .sol-card .tag {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        color: var(--lime);
+    }
+
+    .sol-card h3 {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: -.03em;
+        line-height: 1.15;
+        margin: 8px 0 6px 0;
+        color: #fff;
+    }
+
+    .sol-card p {
+        font-size: 12.5px;
+        line-height: 1.45;
+        color: var(--deck-text-dim);
+    }
+
+    /* Mossline Stats Ribbon */
+    .stats-ribbon {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        padding: 20px 0;
+        border-top: 1px solid var(--deck-border);
+        border-bottom: 1px solid var(--deck-border);
+        margin: 24px 0;
+    }
+
+    .stat-item strong {
+        display: block;
+        font-size: 38px;
+        font-weight: 600;
+        letter-spacing: -.04em;
+        line-height: 1;
+        color: var(--lime);
+    }
+
+    .stat-item span {
+        display: block;
+        font-family: var(--mono);
+        font-size: 10.5px;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        color: var(--deck-text-dim);
+        margin-top: 6px;
+    }
+
     /* Telemetry Coordinates Header */
     .hud-meta {
         font-family: var(--mono);
         font-size: 11px;
-        color: var(--text-dim);
+        color: var(--deck-text-dim);
         letter-spacing: 0.12em;
-        line-height: 1.6;
+        line-height: 1.65;
     }
 
     /* Sidebar Clean Styling */
     section[data-testid="stSidebar"] {
-        background-color: var(--ink2) !important;
-        border-right: 1px solid var(--line) !important;
+        background-color: var(--ink) !important;
+        border-right: 1px solid var(--deck-border) !important;
     }
 
-    /* Clean Streamlit widgets */
+    /* Streamlit Widget Polishing */
     .stSlider > div > div > div > div {
         background-color: var(--lime) !important;
     }
-    
-    .stSelectbox, .stRadio, .stNumberInput {
-        font-family: var(--sans);
+
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 12px;
+        border-bottom: 1px solid var(--deck-border);
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        font-family: var(--mono);
+        font-size: 11.5px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--deck-text-dim);
+        padding: 10px 16px;
+    }
+
+    .stTabs [aria-selected="true"] {
+        color: var(--lime) !important;
+        border-bottom-color: var(--lime) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -232,6 +414,8 @@ FIGURES_DIR = os.path.join(BASE_DIR, "figures")
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 RESULTS_DIR = os.path.join(BASE_DIR, "results")
 DATA_DIR = os.path.join(BASE_DIR, "data")
+MOSSLINE_DIR = os.path.join(BASE_DIR, "mossline_extracted")
+MOSSLINE_HTML = os.path.join(MOSSLINE_DIR, "index.html")
 
 # Load Models & Metrics with Caching
 @st.cache_resource
@@ -266,25 +450,47 @@ iris_bundle = load_iris_artifacts()
 heart_bundle = load_heart_artifacts()
 iris_metrics_data, heart_metrics_data = load_metrics()
 
-# Top Persistent Scientific HUD Header
+# Top Persistent Mossline Scientific HUD Navigation Header
 st.markdown("""
 <div class="moss-nav">
     <div class="moss-logo">
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-            <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" fill="#132a19" stroke="#c6f35c" stroke-width="1.8"/>
-            <path d="M16 8C12 12 11 17 15 24C16 19 19 15 23 13C20 13 18 14 16 16C16 13 16 11 16 8Z" fill="#c6f35c"/>
+        <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M16 2l12 7v14l-12 7-12-7V9z" fill="#1b3823" stroke="#c6f35c" stroke-width="1.8"/>
+            <path d="M16 8c-4 4-5 9-1 16 1-5 4-9 8-11-3 0-5 1-7 3 0-3 0-5 0-8z" fill="#c6f35c"/>
         </svg>
         <div>
-            <div class="moss-title">MOSSLINE // PU-AI INTELLIGENCE DECK</div>
-            <div class="moss-subtitle">Applied Machine Learning & Biometrics Laboratory</div>
+            <div class="moss-title">MOSSLINE // LIVING PLANET &amp; CLINICAL INFERENCE DECK</div>
+            <div class="moss-subtitle">Applied AI Laboratory • Pentecost University FOCIS</div>
         </div>
     </div>
     <div style="display: flex; gap: 14px; align-items: center;">
-        <span class="chip-dark">STATION 01 • SOWUTUOM</span>
+        <span class="chip-dark">STATION 07 • SOWUTUOM</span>
         <span class="chip">EVAL-PROD // READY</span>
-        <span class="hud-meta" style="border-left: 1px solid var(--line); padding-left: 14px;">
-            LAT 5.6037° N<br/>LON 0.2828° W
+        <span class="hud-meta" style="border-left: 1px solid var(--deck-border); padding-left: 14px;">
+            LAT 5.6037° N<br/>LON 0.2828° W • ELEV 82M
         </span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# 4 Key Quantitative Performance Metrics Ribbon
+st.markdown("""
+<div class="stats-ribbon">
+    <div class="stat-item">
+        <strong>150</strong>
+        <span>Iris Taxa Specimens (data/iris.csv)</span>
+    </div>
+    <div class="stat-item">
+        <strong>96.67%</strong>
+        <span>Part A SVC Test Accuracy</span>
+    </div>
+    <div class="stat-item">
+        <strong>96.00%</strong>
+        <span>Part B Random Forest Accuracy</span>
+    </div>
+    <div class="stat-item">
+        <strong>98.25%</strong>
+        <span>Patient Sensitivity Recall Safeguard</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -305,7 +511,8 @@ page = st.sidebar.radio(
         "🌸 Part A: Iris Botanical Neural Engine",
         "🫀 Part B: Cardiac Hemodynamic Risk Engine",
         "⚡ Model Telemetry & Comparative Benchmarks",
-        "📑 Preprocessing & Academic Report"
+        "📑 Preprocessing & Academic Report",
+        "🌿 Mossline Cinematic Scrollytelling (AI Studio)"
     ]
 )
 
@@ -315,8 +522,9 @@ st.sidebar.markdown(
     <div class="hud-meta">
         <b>SUPERVISION</b>: Mr. Harry Attieku-Boateng<br/>
         <b>RESEARCHER</b>: Emmanuel Asante<br/>
-        <b>MATRICULATION</b>: PU092301<br/>
+        <b>MATRICULATION</b>: PU092301 / PUIT23210016<br/>
         <b>FACULTY</b>: FOCIS Computer Science<br/>
+        <b>DESIGN ENGINE</b>: Google AI Studio (Mossline)<br/>
         <b>FRAMEWORK</b>: Scikit-Learn 1.9 // Python 3.11
     </div>
     """,
@@ -333,9 +541,9 @@ if page == "🌸 Part A: Iris Botanical Neural Engine":
             <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 6px;">
                 <span class="chip">PART A</span>
                 <span class="chip-dark">BOTANICAL MULTI-CLASS</span>
-                <span style="font-family: var(--mono); font-size: 11px; color: var(--text-dim);">DATASET: data/iris.csv (150 SAMPLES)</span>
+                <span style="font-family: var(--mono); font-size: 11px; color: var(--deck-text-dim);">DATASET: data/iris.csv (150 SAMPLES)</span>
             </div>
-            <h1 style="margin: 0; font-size: 32px; letter-spacing: -0.03em; color: var(--text-bright);">
+            <h1 style="margin: 0; font-size: 32px; letter-spacing: -0.03em; color: var(--deck-text);">
                 Iris Botanical Morphometric Classification
             </h1>
         </div>
@@ -379,6 +587,29 @@ if page == "🌸 Part A: Iris Botanical Neural Engine":
             )
             st.markdown("</div>", unsafe_allow_html=True)
 
+            # Mossline Live Telemetry Glass Card
+            st.markdown("""
+            <div class="moss-telemetry-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h4>Morphometric Dimension<br/>Balance</h4>
+                        <div class="note">Plot 07 • 4 Botanical Features</div>
+                    </div>
+                    <span class="delta">+0.967 F1</span>
+                </div>
+                <div class="big">
+                    <strong>96.7</strong><span>% Confidence</span>
+                </div>
+                <svg viewBox="0 0 220 54" style="width: 100%; height: 54px; margin-top: 8px; overflow: visible;">
+                    <polyline class="animated-sparkline" fill="none" stroke="#c6f35c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,48 30,42 60,45 90,30 120,34 150,18 180,14 214,6"/>
+                    <circle cx="90" cy="30" r="2.8" fill="#fff"/>
+                    <circle cx="150" cy="18" r="2.8" fill="#fff"/>
+                    <circle cx="214" cy="6" r="3.6" fill="#c6f35c"/>
+                </svg>
+                <div class="note" style="margin-top: 4px;">Sepal L • Sepal W • Petal L • Petal W</div>
+            </div>
+            """, unsafe_allow_html=True)
+
         with col_pred:
             if "Setosa" in preset:
                 sepal_length, sepal_width, petal_length, petal_width = 5.1, 3.5, 1.4, 0.2
@@ -416,7 +647,7 @@ if page == "🌸 Part A: Iris Botanical Neural Engine":
                     <div class="hud-meta">
                         PREDICTOR: Support Vector Classifier (RBF Kernel)<br/>
                         NORM SCALE: StandardScaler (Z-Score Normalization)<br/>
-                        STATUS: Confirmed Species Taxon
+                        STATUS: Confirmed Species Taxon from data/iris.csv
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -430,7 +661,7 @@ if page == "🌸 Part A: Iris Botanical Neural Engine":
                 <div class="glass-card">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
                         <span class="chip-dark">POSTERIOR DENSITY PROFILE</span>
-                        <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim);">CALIBRATED PLATT SCALING</span>
+                        <span style="font-family:var(--mono); font-size:11px; color:var(--deck-text-dim);">CALIBRATED PLATT SCALING</span>
                     </div>
                 """, unsafe_allow_html=True)
 
@@ -485,9 +716,9 @@ elif page == "🫀 Part B: Cardiac Hemodynamic Risk Engine":
             <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 6px;">
                 <span class="chip-danger">PART B</span>
                 <span class="chip">ONEHOTENCODER: ACTIVE</span>
-                <span style="font-family: var(--mono); font-size: 11px; color: var(--text-dim);">DATASET: data/heart.csv (~500 PATIENTS)</span>
+                <span style="font-family: var(--mono); font-size: 11px; color: var(--deck-text-dim);">DATASET: data/heart.csv (~500 PATIENTS)</span>
             </div>
-            <h1 style="margin: 0; font-size: 32px; letter-spacing: -0.03em; color: var(--text-bright);">
+            <h1 style="margin: 0; font-size: 32px; letter-spacing: -0.03em; color: var(--deck-text);">
                 <span class="pulse-heart">🫀</span> Cardiovascular Pathological Risk Engine
             </h1>
         </div>
@@ -600,7 +831,7 @@ elif page == "🫀 Part B: Cardiac Hemodynamic Risk Engine":
                 probabilities = pipeline.predict_proba(patient_data)[0]
                 risk_prob = probabilities[1]
 
-                st.markdown("<hr style='border-color: var(--line); margin: 20px 0;'>", unsafe_allow_html=True)
+                st.markdown("<hr style='border-color: var(--deck-border); margin: 20px 0;'>", unsafe_allow_html=True)
                 
                 res_col1, res_col2 = st.columns([1.1, 1.2])
                 with res_col1:
@@ -710,9 +941,48 @@ elif page == "⚡ Model Telemetry & Comparative Benchmarks":
                 <span class="chip">TELEMETRY</span>
                 <span class="chip-dark">5-FOLD STRATIFIED CV</span>
             </div>
-            <h1 style="margin: 0; font-size: 32px; letter-spacing: -0.03em; color: var(--text-bright);">
+            <h1 style="margin: 0; font-size: 32px; letter-spacing: -0.03em; color: var(--deck-text);">
                 Comparative Algorithm Evaluation Deck
             </h1>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 3D Solution Architecture Cards (Mossline Design System)
+    st.markdown("""
+    <div class="sol-grid">
+        <div class="sol-card">
+            <div>
+                <span class="tag">[PART A: BOTANICAL]</span>
+                <h3>Support Vector Machine</h3>
+                <p>Radial Basis Function (RBF) kernel mapping 4D floral geometry into separable Hilbert space.</p>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-family:var(--mono); font-size:11px; color:var(--lime);">96.67% ACC</span>
+                <span class="chip">CHAMPION</span>
+            </div>
+        </div>
+        <div class="sol-card">
+            <div>
+                <span class="tag">[PART B: HEMODYNAMIC]</span>
+                <h3>Random Forest Ensemble</h3>
+                <p>100 decorrelated decision trees with OneHotEncoder preprocessor maximizing patient recall.</p>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-family:var(--mono); font-size:11px; color:var(--lime);">98.25% RECALL</span>
+                <span class="chip">CHAMPION</span>
+            </div>
+        </div>
+        <div class="sol-card">
+            <div>
+                <span class="tag">[ARCHITECTURE]</span>
+                <h3>ColumnTransformer</h3>
+                <p>End-to-end reproducible Scikit-Learn pipeline isolating training and test distributions.</p>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-family:var(--mono); font-size:11px; color:var(--lime);">ZERO LEAKAGE</span>
+                <span class="chip-dark">STABLE</span>
+            </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -765,7 +1035,7 @@ elif page == "📑 Preprocessing & Academic Report":
                 <span class="chip">ARCHITECTURE</span>
                 <span class="chip-dark">ONEHOTENCODER MANDATE</span>
             </div>
-            <h1 style="margin: 0; font-size: 32px; letter-spacing: -0.03em; color: var(--text-bright);">
+            <h1 style="margin: 0; font-size: 32px; letter-spacing: -0.03em; color: var(--deck-text);">
                 Mandatory Preprocessing & Technical Report
             </h1>
         </div>
@@ -775,10 +1045,10 @@ elif page == "📑 Preprocessing & Academic Report":
     st.markdown("""
     <div class="glass-card">
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-            <span class="chip">ONEHOTENCODER VIA COLUM раскрытие</span>
+            <span class="chip">ONEHOTENCODER VIA COLUMNTRANSFORMER</span>
             <span style="font-family:var(--mono); font-size:11px; color:var(--lime);">SCIKIT-LEARN PIPELINE</span>
         </div>
-        <p style="color:var(--text-bright);">
+        <p style="color:var(--deck-text);">
             Mr. Harry Attieku-Boateng explicitly mandated that categorical features in Part B must not be encoded manually
             or with label encoding, as label encoding imposes false ordinal distance. The code below illustrates the production pipeline:
         </p>
@@ -817,17 +1087,48 @@ pipeline.fit(X_train, y_train)
             • <b>DOCUMENT</b>: Emmanuel_Asante_PU092301_Assignment1.docx (2.14 MB)<br/>
             • <b>STRUCTURE</b>: Automated Table of Contents (TOC), Table of Figures, 8 Embedded 300 DPI Figures<br/>
             • <b>COMPLIANCE</b>: Turnitin Plagiarism &le; 20%, AI Detection &le; 20%<br/>
-            • <b>HEADER LINKS</b>: Live Streamlit Cloud Deployment & GitHub Repository URL
+            • <b>SUPERVISION</b>: Mr. Harry Attieku-Boateng (Lecturer)
         </div>
     </div>
     """, unsafe_allow_html=True)
 
+# =============================================================
+# MODULE 5: MOSSLINE CINEMATIC SCROLLYTELLING (AI STUDIO)
+# =============================================================
+elif page == "🌿 Mossline Cinematic Scrollytelling (AI Studio)":
+    st.markdown("""
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 18px;">
+        <div>
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 6px;">
+                <span class="chip">AI STUDIO EXPORT</span>
+                <span class="chip-dark">MOSSLINE INTERACTIVE DESIGN</span>
+                <span style="font-family: var(--mono); font-size: 11px; color: var(--deck-text-dim);">640VH SCROLL STAGE</span>
+            </div>
+            <h1 style="margin: 0; font-size: 32px; letter-spacing: -0.03em; color: var(--deck-text);">
+                Mossline Cinematic Field Experience
+            </h1>
+        </div>
+        <div style="text-align: right;">
+            <span class="chip" style="background: var(--lime); color: var(--ink);">GOOGLE AI STUDIO APP</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.info("💡 **Interactive Showcase**: Scroll directly within the viewport below to experience the 5-beat scrollytelling fly-in, canvas video scrubbing, procedural SVG fog, interactive hotspots, live sparkline carbon balance, and 3D tilting solution cards.")
+
+    if os.path.exists(MOSSLINE_HTML):
+        with open(MOSSLINE_HTML, "r", encoding="utf-8") as f:
+            moss_html = f.read()
+        components.html(moss_html, height=880, scrolling=True)
+    else:
+        st.error("Mossline extracted index.html not found.")
+
 # Persistent Footer
 st.markdown("---")
 st.markdown("""
-<div style="text-align: center; color: var(--text-dim); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; padding: 10px 0;">
-    PENTECOST UNIVERSITY // FACULTY OF COMPUTING & INFORMATION SYSTEMS (FOCIS)<br/>
-    APPLIED AI & MACHINE LEARNING ASSIGNMENT 1 • SUPERVISED BY MR. HARRY ATTIEKU-BOATENG<br/>
-    DEVELOPED BY EMMANUEL ASANTE (PU092301 // PUIT/23210016)
+<div style="text-align: center; color: var(--deck-text-dim); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; padding: 10px 0;">
+    PENTECOST UNIVERSITY // FACULTY OF COMPUTING &amp; INFORMATION SYSTEMS (FOCIS)<br/>
+    APPLIED AI &amp; MACHINE LEARNING ASSIGNMENT 1 • SUPERVISED BY MR. HARRY ATTIEKU-BOATENG<br/>
+    DESIGNED IN GOOGLE AI STUDIO • DEVELOPED BY EMMANUEL ASANTE (PU092301 // PUIT23210016)
 </div>
 """, unsafe_allow_html=True)
