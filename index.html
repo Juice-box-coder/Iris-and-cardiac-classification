@@ -42,6 +42,24 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 
 .mono { font-family: var(--mono); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; }
+.chip-hero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 13px;
+  background: linear-gradient(90deg, #b9f24e 0%, #cbf86c 36%, #ffe4e6 64%, #fca5a5 82%, #ff7e8a 100%);
+  color: #0d2616;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(16, 41, 26, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
 .chip {
   display: inline-flex;
   align-items: center;
@@ -604,7 +622,7 @@ table.bench-table tr.champion td { font-weight: 700; color: #2e6008; background:
       <!-- L0 Hero Headline -->
       <div class="layer l0" id="l0">
         <div class="hero-copy" id="heroCopy">
-          <span class="chip">Applied Machine Learning &bull; ISE 402</span>
+          <span class="chip-hero">Iris and Heart Classification</span>
           <h1 id="heroTitle"><span class="line"><span id="heroLine">Measure the Living Planet</span></span></h1>
         </div>
       </div>
