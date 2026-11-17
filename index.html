@@ -199,7 +199,7 @@ nav {
 }
 @keyframes drift { from { transform: translate3d(0,0,0); } to { transform: translate3d(4%, -2%, 0); } }
 
-#push { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; z-index: 1; pointer-events: none; }
+#push { display: none; }
 
 /* Fog Bank */
 .fog {
@@ -607,11 +607,12 @@ table.bench-table tr.champion td { font-weight: 700; color: #2e6008; background:
   <section id="story">
     <div class="stage">
       <div class="cam" id="camB">
-        <video id="push" muted playsinline preload="auto" loop crossorigin="anonymous" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261106_025717_906b686d-9a9a-4dea-bab4-ae2454f8390e.mp4"></video>
-        <canvas id="cv"></canvas>
+        <img class="plate" id="landPlate" src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261106_025630_9a37a1e0-2547-4973-8160-c75205993914.png&w=1400&q=82" alt="Sensor-mast landscape at eye level" referrerpolicy="no-referrer" style="opacity:0;">
         <img class="plate" id="plate" src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261106_031618_8ce6dca1-972d-429d-8d13-bf0691c37848.png&w=2400&q=88" alt="Floating moss island suspended in mist" referrerpolicy="no-referrer">
+        <canvas id="cv" style="pointer-events:none;"></canvas>
         <div class="mist" aria-hidden="true"></div>
       </div>
+      <video id="push" muted playsinline preload="none" style="display:none;"></video>
 
       <div class="fog" id="fog" aria-hidden="true">
         <div class="f0"></div>
@@ -1180,6 +1181,7 @@ SOWUTUOM • ELEV 82M</pre>
   const camB = document.getElementById('camB');
   const camF = document.getElementById('camF');
   const plate = document.getElementById('plate');
+  const landPlate = document.getElementById('landPlate');
   const cv = document.getElementById('cv');
   const ctx = cv.getContext('2d');
   const vid = document.getElementById('push');
@@ -1554,36 +1556,20 @@ SOWUTUOM • ELEV 82M</pre>
 
     sx += (mx - sx) * .06;
     sy += (my - sy) * .06;
-
-    /* Video Scrubbing (Direct currentTime + Canvas cache fallback) */
-    const vp = ease(seg(sp, .03, .78));
-    if (vid.duration && !isNaN(vid.duration)) {
-      const targetTime = Math.min(vid.duration - 0.04, Math.max(0, vp * vid.duration));
-      if (Math.abs(vid.currentTime - targetTime) > 0.04) {
-        vid.currentTime = targetTime;
-      }
-    }
-    want = Math.round(vp * (NF - 1));
-    drawWant();
-
-    /* Camera Transform: Dynamic Zoom and Parallax (Continuous motion) */
-    const camTf = `translate3d(${-sx * 18}px, ${-sy * 12 + (1 - vp) * window.innerHeight * .06}px, 0) scale(${1 + .28 * vp})`;
+    /* Camera Transform: Dynamic Zoom and Parallax (Continuous Cinematic Fly-In) */
+    const vp = ease(seg(sp, 0, .75));
+    const camTf = `translate3d(${-sx * 18}px, ${-sy * 12 + (1 - vp) * window.innerHeight * .05}px, 0) scale(${1 + .34 * vp})`;
     camB.style.transform = camTf;
     camF.style.transform = camTf;
 
-    /* Hero Hand-off with Resilient Backdrop (Guarantees zero blank space) */
-    const hasActiveVideo = cached > 8 || (vid.readyState >= 2 && !vid.error && vid.currentTime > 0.1);
-    let plateOp;
-    if (hasActiveVideo) {
-      plateOp = 1 - seg(sp, .06, .20);
-    } else {
-      // Keep stunning high-res island visible throughout the scroll so it NEVER turns blank!
-      plateOp = Math.max(0.68, 1 - seg(sp, .25, .85) * 0.32);
-    }
-    plate.style.opacity = plateOp;
-    plate.style.visibility = plateOp > 0.01 ? 'visible' : 'hidden';
-    camF.style.opacity = plateOp;
-    camF.style.visibility = plateOp > 0.01 ? 'visible' : 'hidden';
+    /* Seamless Dual-Plate Cross-Fade (Hero Island -> Eye-Level Landscape: ZERO Blank Space) */
+    const crossFade = seg(sp, .28, .52);
+    plate.style.opacity = 1 - crossFade;
+    plate.style.visibility = crossFade < 1 ? 'visible' : 'hidden';
+    landPlate.style.opacity = crossFade;
+    landPlate.style.visibility = crossFade > 0 ? 'visible' : 'hidden';
+    camF.style.opacity = 1 - crossFade;
+    camF.style.visibility = crossFade < 1 ? 'visible' : 'hidden';
 
     /* L0 & L1 (Hero Headline & HUD) */
     const h = seg(sp, .01, .16);
