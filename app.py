@@ -2,10 +2,11 @@
 Assignment 1: Machine Learning Classification Systems
 Course: Applied AI / Machine Learning & Software Development
 Lecturer: Mr. Harry Attieku-Boateng
+Student: Emmanuel Asante (ID: PU092301)
 
 Streamlit Interactive Inference & Analytical Dashboard
-- Part A: Iris Flower Classification (Multi-class)
-- Part B: Heart Disease Prediction (Binary Clinical Risk Pipeline using OneHotEncoder)
+- Part A: Iris Flower Classification (Multi-class with botanical visual guide)
+- Part B: Heart Disease Prediction (Binary Clinical Risk Pipeline using OneHotEncoder with ECG visuals)
 """
 
 import os
@@ -17,11 +18,94 @@ import streamlit as st
 
 # Configure Page
 st.set_page_config(
-    page_title="AI Classification Systems | Assignment 1",
-    page_icon="🩺",
+    page_title="Applied AI Classification Suite | PU",
+    page_icon="🌸",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Custom CSS Animations & Styling
+st.markdown("""
+<style>
+    /* CSS Keyframe Animations */
+    @keyframes heartbeat {
+        0% { transform: scale(1); }
+        15% { transform: scale(1.18); }
+        30% { transform: scale(1); }
+        45% { transform: scale(1.12); }
+        60% { transform: scale(1); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes pulse-glow-red {
+        0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+        70% { box-shadow: 0 0 0 14px rgba(220, 53, 69, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+    }
+
+    @keyframes pulse-glow-green {
+        0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+        70% { box-shadow: 0 0 0 14px rgba(40, 167, 69, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+    }
+
+    @keyframes floatSlow {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-6px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* Animated Heart Widget */
+    .pulsing-heart {
+        display: inline-block;
+        animation: heartbeat 1.4s infinite ease-in-out;
+        transform-origin: center center;
+        font-size: 28px;
+        vertical-align: middle;
+        margin-right: 8px;
+    }
+
+    .floating-flower {
+        display: inline-block;
+        animation: floatSlow 3s infinite ease-in-out;
+        font-size: 26px;
+        vertical-align: middle;
+        margin-right: 8px;
+    }
+
+    /* Result Cards */
+    .alert-card-danger {
+        background: #FFF5F5;
+        border: 2px solid #E53E3E;
+        border-radius: 12px;
+        padding: 20px;
+        animation: pulse-glow-red 2s infinite;
+        margin-top: 15px;
+    }
+
+    .alert-card-success {
+        background: #F0FFF4;
+        border: 2px solid #38A169;
+        border-radius: 12px;
+        padding: 20px;
+        animation: pulse-glow-green 2s infinite;
+        margin-top: 15px;
+    }
+
+    .iris-species-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .iris-species-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -62,15 +146,22 @@ iris_bundle = load_iris_artifacts()
 heart_bundle = load_heart_artifacts()
 iris_metrics_data, heart_metrics_data = load_metrics()
 
-# Sidebar Navigation
-st.sidebar.title("🩺 Navigation")
-st.sidebar.markdown("**Course**: Applied AI / ML\n**Lecturer**: Mr. Harry Attieku-Boateng")
+# Sidebar Navigation (Overview Removed as Requested)
+st.sidebar.markdown("""
+<div style="text-align: center; margin-bottom: 15px;">
+    <h2 style="margin: 0; color: #1e3c72;">AI Classification Suite</h2>
+    <span style="background: #e8f4fd; color: #1e3c72; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold;">
+        Pentecost University
+    </span>
+</div>
+""", unsafe_allow_html=True)
+
+st.sidebar.markdown("**Course**: Applied AI / Machine Learning (ISE 402)\n**Lecturer**: Mr. Harry Attieku-Boateng\n**Student**: Emmanuel Asante (PU092301)")
 st.sidebar.divider()
 
 page = st.sidebar.radio(
-    "Select Application Module:",
+    "Select Classification Module:",
     [
-        "🏠 Overview & System Architecture",
         "🌸 Part A: Iris Flower Classification",
         "❤️ Part B: Heart Disease Risk Predictor",
         "📊 Comparative Model Benchmarks",
@@ -81,141 +172,146 @@ page = st.sidebar.radio(
 st.sidebar.divider()
 st.sidebar.markdown(
     """
-    **Project Deliverables**:
-    - [GitHub Source Repository](https://github.com)
-    - [Live Cloud Application](https://streamlit.io)
-    - *Word Report*: `Emmanuel_Asante_Assignment1.docx`
+    **Deliverable Artifacts**:
+    * 📄 `Emmanuel_Asante_PU092301_Assignment1.docx`
+    * 📁 Dataset: `data/iris.csv` & `data/heart.csv`
+    * 🌐 Cloud Deployed Web Interface
     """
 )
 
 # Header Component
-def render_header(title, subtitle, badge):
+def render_header(title, subtitle, badge, icon_type="flower"):
+    anim_icon = '<span class="floating-flower">🌸</span>' if icon_type == "flower" else '<span class="pulsing-heart">❤️</span>'
     st.markdown(
         f"""
-        <div style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 22px; border-radius: 10px; color: white; margin-bottom: 22px;">
+        <div style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 22px; border-radius: 12px; color: white; margin-bottom: 22px; box-shadow: 0 4px 14px rgba(30, 60, 114, 0.2);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="margin: 0; color: #ffffff;">{title}</h2>
+                <h2 style="margin: 0; color: #ffffff;">{anim_icon}{title}</h2>
                 <span style="background: #27ae60; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 13px;">{badge}</span>
             </div>
-            <p style="margin: 6px 0 0 0; color: #e0e0e0; font-size: 15px;">{subtitle}</p>
+            <p style="margin: 6px 0 0 0; color: #e0e0e0; font-size: 14.5px;">{subtitle}</p>
         </div>
         """,
         unsafe_allow_html=True
     )
 
-# -------------------------------------------------------------
-# PAGE 1: OVERVIEW & SYSTEM ARCHITECTURE
-# -------------------------------------------------------------
-if page == "🏠 Overview & System Architecture":
+# =============================================================
+# MODULE 1: PART A - IRIS CLASSIFICATION
+# =============================================================
+if page == "🌸 Part A: Iris Flower Classification":
     render_header(
-        "Machine Learning Classification Suite",
-        "Dual-Pipeline Implementation: Multi-Class Iris Botanical Classification & OneHotEncoded Binary Cardiac Risk Prediction",
-        "Assignment 1 • 10 Marks"
+        "Part A: Iris Flower Multi-Class Botanical Classification",
+        "Trained directly on data/iris.csv • Multi-Class Species Identification based on Morphological Floral Dimensions",
+        "Champion: SVC (96.67% Acc)",
+        icon_type="flower"
     )
 
-    col1, col2 = st.columns([3, 2])
-    with col1:
-        st.markdown("### 📌 Executive Overview")
-        st.write(
-            """
-            This web application serves as the production inference interface and analytical demonstrator for
-            **Assignment 1** in *Applied AI / Machine Learning & Software Development*.
-
-            The project addresses two distinct machine learning challenges:
-            1. **Part A (Botanical Multi-Class Task)**: Supervised classification of Iris species (*Iris setosa*, *Iris versicolor*, *Iris virginica*) using standard morphological parameters.
-            2. **Part B (Clinical Binary Task)**: Cardiovascular pathology risk prediction over a patient cohort (~500 records) utilizing a strict **`OneHotEncoder`** preprocessing architecture mandated by the course specification.
-            """
-        )
-
-        st.info(
-            """
-            **Mandatory Preprocessing Requirement Compliance**:
-            As explicitly instructed by the lecturer, categorical features in Part B (`Sex`, `ChestPainType`, `RestingECG`, `ExerciseAngina`, `ST_Slope`) are strictly preprocessed using Scikit-Learn's `OneHotEncoder` within an isolated `ColumnTransformer` to eliminate ordinal bias and data leakage.
-            """
-        )
-
-    with col2:
-        st.markdown("### 🎓 Student & Submission Details")
-        st.markdown(
-            """
-            | Parameter | Value |
-            | :--- | :--- |
-            | **Student Name** | Emmanuel Asante |
-            | **Course** | Applied AI / Machine Learning |
-            | **Lecturer** | Mr. Harry Attieku-Boateng |
-            | **Turnitin Threshold** | Similarity $\le$ 20%, AI $\le$ 20% |
-            | **Model Framework** | Scikit-Learn 1.9+, Python 3.11 |
-            | **Deployment** | Streamlit Cloud / Render |
-            """
-        )
-
-    st.divider()
-    st.markdown("### 🛠️ Pipeline Architectural Workflow")
-    st.markdown(
-        """
-        ```
-        [Raw Input Data] 
-               │
-               ├──> Part A (Iris): Feature Matrix (4 dims) ──> StandardScaler ──> Best SVC / LR Pipeline ──> Botanical Class
-               │
-               └──> Part B (Heart): Numerical Features (6) ───> StandardScaler ──┐
-                                    Categorical Features (5) ─> OneHotEncoder ──┴─> Best Ensemble Pipeline ──> Binary Risk (0 / 1)
-        ```
-        """
-    )
-
-# -------------------------------------------------------------
-# PAGE 2: PART A - IRIS CLASSIFICATION
-# -------------------------------------------------------------
-elif page == "🌸 Part A: Iris Flower Classification":
-    render_header(
-        "Part A: Iris Flower Multi-Class Classification",
-        "Botanical Species Identification based on Morphological Floral Dimensions",
-        "Part A • Multi-Class"
-    )
-
-    tab_infer, tab_eda, tab_metrics = st.tabs(["🧪 Interactive Classification", "📈 Exploratory Data Analysis (EDA)", "🎯 Performance Evaluation"])
+    tab_infer, tab_guide, tab_eda, tab_metrics = st.tabs([
+        "🧪 Live Interactive Classification",
+        "🌺 Morphological Botanical Guide",
+        "📈 Exploratory Data Analysis (EDA)",
+        "🎯 Confusion Matrix & Metrics"
+    ])
 
     with tab_infer:
-        st.markdown("#### Input Morphological Floral Measurements")
-        col_in1, col_in2 = st.columns(2)
+        col_controls, col_preview = st.columns([1.1, 1.0])
 
-        with col_in1:
-            sepal_length = st.slider("Sepal Length (cm)", min_value=4.0, max_value=8.0, value=5.8, step=0.1, help="Calyx segment length")
-            sepal_width = st.slider("Sepal Width (cm)", min_value=2.0, max_value=4.5, value=3.0, step=0.1, help="Calyx segment width")
+        with col_controls:
+            st.markdown("#### Adjust Floral Morphological Measurements")
+            st.caption("Values correspond directly to the features in `data/iris.csv`")
+            
+            sepal_length = st.slider("Sepal Length (cm)", min_value=4.0, max_value=8.0, value=5.4, step=0.1, help="Length of the outer flower calyx segment")
+            sepal_width = st.slider("Sepal Width (cm)", min_value=2.0, max_value=4.5, value=3.4, step=0.1, help="Width of the outer flower calyx segment")
+            petal_length = st.slider("Petal Length (cm)", min_value=1.0, max_value=7.0, value=1.7, step=0.1, help="Length of the inner corolla petal")
+            petal_width = st.slider("Petal Width (cm)", min_value=0.1, max_value=2.5, value=0.4, step=0.1, help="Width of the inner corolla petal")
 
-        with col_in2:
-            petal_length = st.slider("Petal Length (cm)", min_value=1.0, max_value=7.0, value=4.3, step=0.1, help="Corolla inner segment length")
-            petal_width = st.slider("Petal Width (cm)", min_value=0.1, max_value=2.5, value=1.3, step=0.1, help="Corolla inner segment width")
+            # Quick Presets from actual data/iris.csv
+            preset = st.selectbox(
+                "Or load sample observation from data/iris.csv:",
+                [
+                    "(Custom Slider Input)",
+                    "Sample Setosa Row: [5.1, 3.5, 1.4, 0.2]",
+                    "Sample Versicolor Row: [6.0, 2.9, 4.5, 1.5]",
+                    "Sample Virginica Row: [6.9, 3.1, 5.4, 2.1]"
+                ]
+            )
 
-        if iris_bundle:
-            pipeline = iris_bundle["pipeline"]
-            target_names = iris_bundle["target_names"]
-            feature_names = iris_bundle["feature_names"]
+        with col_preview:
+            # Dynamically display the correlated botanical species card
+            if "Setosa" in preset:
+                sepal_length, sepal_width, petal_length, petal_width = 5.1, 3.5, 1.4, 0.2
+            elif "Versicolor" in preset:
+                sepal_length, sepal_width, petal_length, petal_width = 6.0, 2.9, 4.5, 1.5
+            elif "Virginica" in preset:
+                sepal_length, sepal_width, petal_length, petal_width = 6.9, 3.1, 5.4, 2.1
 
-            input_df = pd.DataFrame([[sepal_length, sepal_width, petal_length, petal_width]], columns=feature_names)
-            pred_idx = pipeline.predict(input_df)[0]
-            pred_proba = pipeline.predict_proba(input_df)[0]
-            pred_species = target_names[pred_idx]
+            if iris_bundle:
+                pipeline = iris_bundle["pipeline"]
+                target_names = iris_bundle["target_names"]
+                feature_names = iris_bundle["feature_names"]
 
-            st.divider()
-            st.markdown("#### Botanical Identification Result")
-            res_col1, res_col2 = st.columns([2, 3])
+                input_df = pd.DataFrame([[sepal_length, sepal_width, petal_length, petal_width]], columns=feature_names)
+                pred_idx = pipeline.predict(input_df)[0]
+                pred_proba = pipeline.predict_proba(input_df)[0]
+                pred_species = target_names[pred_idx]
 
-            with res_col1:
-                st.success(f"### Predicted Species:\n**Iris {pred_species}**")
-                st.caption(f"Champion Model Architecture: `{iris_bundle['best_model_name']}`")
+                st.markdown("#### Predicted Botanical Identity")
+                
+                # Dynamic Species Badge & Card
+                species_colors = {
+                    "setosa": ("#3F51B5", "iris_setosa_card.png"),
+                    "versicolor": ("#7B1FA2", "iris_versicolor_card.png"),
+                    "virginica": ("#4A148C", "iris_virginica_card.png")
+                }
+                sp_color, sp_img = species_colors.get(pred_species.lower(), ("#1e3c72", "iris_setosa_card.png"))
+                
+                st.markdown(f"""
+                <div class="iris-species-card" style="border-left: 6px solid {sp_color};">
+                    <span style="background: {sp_color}; color: white; padding: 4px 12px; border-radius: 15px; font-weight: bold; font-size: 13px;">
+                        ★ CHAMPION PREDICTION
+                    </span>
+                    <h2 style="color: {sp_color}; margin: 8px 0 4px 0;">Iris {pred_species}</h2>
+                    <p style="color: #4A5568; font-size: 13px; margin: 0;">
+                        Confidence: <b>{pred_proba[pred_idx] * 100:.1f}%</b> | Architecture: <code>{iris_bundle['best_model_name']}</code>
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                card_img_path = os.path.join(FIGURES_DIR, sp_img)
+                if os.path.exists(card_img_path):
+                    st.image(card_img_path, caption=f"Morphological Representation: Iris {pred_species}", use_container_width=True)
 
-            with res_col2:
-                st.markdown("**Posterior Class Probabilities**:")
+                st.markdown("##### Posterior Class Likelihoods:")
                 for name, prob in zip(target_names, pred_proba):
-                    st.write(f"Iris *{name}*: `{prob * 100:.1f}%`")
+                    st.write(f"• **Iris *{name}***: `{prob * 100:.1f}%`")
                     st.progress(float(prob))
-        else:
-            st.warning("Model bundle not found. Please run `train_iris.py` to generate model artifacts.")
+
+    with tab_guide:
+        st.markdown("#### 🌺 Botanical Anatomy & Species Morphology Guide")
+        st.write("Understand the physiological distinction between **Sepals** (the outer calyx protecting the bud) and **Petals** (the inner corolla attracting pollinators):")
+        
+        guide_path = os.path.join(FIGURES_DIR, "iris_morphology_guide.png")
+        if os.path.exists(guide_path):
+            st.image(guide_path, caption="Botanical Guide: Petal vs. Sepal Morphological Measurements", use_container_width=True)
+            
+        st.markdown("---")
+        st.markdown("##### Three Target Botanical Taxa in `data/iris.csv`:")
+        g_c1, g_c2, g_c3 = st.columns(3)
+        with g_c1:
+            p1 = os.path.join(FIGURES_DIR, "iris_setosa_card.png")
+            if os.path.exists(p1):
+                st.image(p1, caption="Iris setosa (Linearly Separable)", use_container_width=True)
+        with g_c2:
+            p2 = os.path.join(FIGURES_DIR, "iris_versicolor_card.png")
+            if os.path.exists(p2):
+                st.image(p2, caption="Iris versicolor (Intermediate)", use_container_width=True)
+        with g_c3:
+            p3 = os.path.join(FIGURES_DIR, "iris_virginica_card.png")
+            if os.path.exists(p3):
+                st.image(p3, caption="Iris virginica (Elongated Petals)", use_container_width=True)
 
     with tab_eda:
-        st.markdown("#### Exploratory Visualizations for Iris Morphological Distribution")
+        st.markdown("#### Exploratory Data Analysis (EDA) on `data/iris.csv`")
         eda_path = os.path.join(FIGURES_DIR, "iris_eda_pairplot.png")
         corr_path = os.path.join(FIGURES_DIR, "iris_correlation_heatmap.png")
 
@@ -244,79 +340,92 @@ elif page == "🌸 Part A: Iris Flower Classification":
         with col_m1:
             cm_path = os.path.join(FIGURES_DIR, "iris_confusion_matrix.png")
             if os.path.exists(cm_path):
-                st.image(cm_path, caption="Figure A3: Multi-Class Confusion Matrix (Best Classifier)", use_container_width=True)
+                st.image(cm_path, caption="Figure A3: Multi-Class Confusion Matrix (Champion SVC on data/iris.csv)", use_container_width=True)
         with col_m2:
             comp_path = os.path.join(FIGURES_DIR, "iris_model_comparison.png")
             if os.path.exists(comp_path):
                 st.image(comp_path, caption="Figure A4: Comparative Model Performance Benchmarks", use_container_width=True)
 
-# -------------------------------------------------------------
-# PAGE 3: PART B - HEART DISEASE RISK PREDICTOR
-# -------------------------------------------------------------
+# =============================================================
+# MODULE 2: PART B - HEART DISEASE RISK PREDICTOR
+# =============================================================
 elif page == "❤️ Part B: Heart Disease Risk Predictor":
     render_header(
         "Part B: Heart Disease Clinical Risk Predictor",
-        "Cardiovascular Pathological Prediction using a scikit-learn OneHotEncoder Pipeline",
-        "Part B • Binary Classification"
+        "Mandatory Scikit-Learn OneHotEncoder Architecture • Binary Cardiovascular Risk Assessment",
+        "Champion: Random Forest (96.0% Acc, 98.25% Recall)",
+        icon_type="heart"
     )
 
-    tab_pred, tab_eda, tab_metrics, tab_feat = st.tabs([
+    tab_pred, tab_ecg_guide, tab_eda, tab_metrics, tab_feat = st.tabs([
         "🩺 Clinical Risk Assessment",
+        "📈 ECG ST-Slope Clinical Guide",
         "📊 Exploratory Data Analysis (EDA)",
         "📈 Performance & ROC Curves",
-        "🧠 Feature Importances"
+        "🧠 OneHotEncoded Feature Importances"
     ])
 
     with tab_pred:
-        st.markdown("#### Patient Clinical Observation Form")
-        st.write("Enter patient physiological observations to compute binary risk likelihood (`0 = No Disease`, `1 = Heart Disease`).")
+        col_form, col_vis = st.columns([1.2, 1.0])
 
-        with st.form("heart_form"):
-            col1, col2 = st.columns(2)
+        with col_form:
+            st.markdown("#### Patient Physiological Data Form")
+            st.write("Enter clinical observations to calculate cardiac risk probability (`0 = No Disease`, `1 = Heart Disease`).")
 
-            with col1:
-                st.markdown("##### 👤 Patient Demographics & Vitals")
-                age = st.slider("Patient Age (Years)", 20, 80, 52)
-                sex = st.selectbox("Biological Sex", options=["M", "F"], format_func=lambda x: "Male (M)" if x == "M" else "Female (F)")
-                resting_bp = st.number_input("Resting Blood Pressure (mm Hg)", min_value=80, max_value=210, value=130)
-                cholesterol = st.number_input("Serum Cholesterol (mg/dL)", min_value=0, max_value=600, value=220, help="Note: 0 indicates missing/unrecorded baseline in standard protocol")
-                fasting_bs = st.radio("Fasting Blood Sugar", options=[0, 1], format_func=lambda x: "Normal (<= 120 mg/dL)" if x == 0 else "Elevated (> 120 mg/dL)")
+            with st.form("heart_form"):
+                st.markdown("##### 👤 Demographics & Hemodynamics")
+                c1, c2 = st.columns(2)
+                with c1:
+                    age = st.slider("Patient Age (Years)", 20, 80, 54)
+                    sex = st.selectbox("Biological Sex", options=["M", "F"], format_func=lambda x: "Male (M)" if x == "M" else "Female (F)")
+                    resting_bp = st.number_input("Resting Blood Pressure (mm Hg)", min_value=80, max_value=210, value=135)
+                with c2:
+                    cholesterol = st.number_input("Serum Cholesterol (mg/dL)", min_value=0, max_value=600, value=245)
+                    fasting_bs = st.radio("Fasting Blood Sugar", options=[0, 1], format_func=lambda x: "Normal (<= 120 mg/dL)" if x == 0 else "Elevated (> 120 mg/dL)")
 
-            with col2:
-                st.markdown("##### 🫀 Cardiac Indicators & Stress Test")
-                chest_pain = st.selectbox(
-                    "Chest Pain Type (ChestPainType)",
-                    options=["ASY", "ATA", "NAP", "TA"],
-                    format_func=lambda x: {
-                        "ASY": "ASY: Asymptomatic Angina",
-                        "ATA": "ATA: Atypical Angina",
-                        "NAP": "NAP: Non-Anginal Pain",
-                        "TA": "TA: Typical Angina"
-                    }[x]
-                )
-                resting_ecg = st.selectbox(
-                    "Resting Electrocardiogram (RestingECG)",
-                    options=["Normal", "ST", "LVH"],
-                    format_func=lambda x: {
-                        "Normal": "Normal: Normal Waveform",
-                        "ST": "ST: ST-T Wave Abnormality",
-                        "LVH": "LVH: Left Ventricular Hypertrophy"
-                    }[x]
-                )
-                max_hr = st.slider("Maximum Heart Rate Achieved (MaxHR)", 60, 210, 142)
-                exercise_angina = st.selectbox("Exercise-Induced Angina", options=["N", "Y"], format_func=lambda x: "No (N)" if x == "N" else "Yes (Y)")
-                oldpeak = st.slider("ST Depression Induced by Exercise (Oldpeak)", -2.0, 6.0, 1.2, step=0.1)
-                st_slope = st.selectbox(
-                    "Peak Exercise ST Segment Slope (ST_Slope)",
-                    options=["Up", "Flat", "Down"],
-                    format_func=lambda x: {
-                        "Up": "Up: Upsloping (Low Risk Indicator)",
-                        "Flat": "Flat: Flat ST Slope (Elevated Risk Indicator)",
-                        "Down": "Down: Downsloping (High Risk Indicator)"
-                    }[x]
-                )
+                st.markdown("##### 🫀 Electrocardiographic & Stress Indicators")
+                c3, c4 = st.columns(2)
+                with c3:
+                    chest_pain = st.selectbox(
+                        "Chest Pain Type (ChestPainType)",
+                        options=["ASY", "ATA", "NAP", "TA"],
+                        format_func=lambda x: {
+                            "ASY": "ASY: Asymptomatic Angina",
+                            "ATA": "ATA: Atypical Angina",
+                            "NAP": "NAP: Non-Anginal Pain",
+                            "TA": "TA: Typical Angina"
+                        }[x]
+                    )
+                    resting_ecg = st.selectbox(
+                        "Resting ECG (RestingECG)",
+                        options=["Normal", "ST", "LVH"],
+                        format_func=lambda x: {
+                            "Normal": "Normal: Normal Waveform",
+                            "ST": "ST: ST-T Wave Abnormality",
+                            "LVH": "LVH: Left Ventricular Hypertrophy"
+                        }[x]
+                    )
+                    max_hr = st.slider("Max Heart Rate Achieved (MaxHR)", 60, 210, 138)
+                with c4:
+                    exercise_angina = st.selectbox("Exercise-Induced Angina", options=["N", "Y"], format_func=lambda x: "No (N)" if x == "N" else "Yes (Y)")
+                    oldpeak = st.slider("ST Depression (Oldpeak)", -2.0, 6.0, 1.4, step=0.1)
+                    st_slope = st.selectbox(
+                        "Peak ST Segment Slope (ST_Slope)",
+                        options=["Up", "Flat", "Down"],
+                        format_func=lambda x: {
+                            "Up": "Up: Upsloping (Low Risk)",
+                            "Flat": "Flat: Flat Slope (Elevated Risk)",
+                            "Down": "Down: Downsloping (High Risk)"
+                        }[x]
+                    )
 
-            submit_btn = st.form_submit_button("🩺 Compute Diagnostic Risk Assessment", use_container_width=True)
+                submit_btn = st.form_submit_button("🩺 Compute Diagnostic Risk Assessment", use_container_width=True)
+
+        with col_vis:
+            st.markdown("#### Clinical Pathology & ECG Reference")
+            pathology_img = os.path.join(FIGURES_DIR, "heart_pathology_diagram.png")
+            if os.path.exists(pathology_img):
+                st.image(pathology_img, caption="Cardiovascular Anatomy & Coronary Artery Stenosis", use_container_width=True)
 
         if submit_btn:
             if heart_bundle:
@@ -340,26 +449,36 @@ elif page == "❤️ Part B: Heart Disease Risk Predictor":
                 risk_prob = probabilities[1]
 
                 st.divider()
-                st.markdown("### 📋 Diagnostic Assessment Report")
+                st.markdown("### 📋 Automated Diagnostic Risk Report")
 
-                res_c1, res_c2 = st.columns([2, 3])
+                res_c1, res_c2 = st.columns([1.1, 1.2])
                 with res_c1:
                     if prediction == 1:
-                        st.error(
-                            f"""
-                            ### ⚠️ HIGH CARDIAC RISK DETECTED
-                            **Predicted Diagnosis**: Positive for Heart Disease (`Target = 1`)  
-                            **Estimated Probability**: `{risk_prob * 100:.1f}%`
-                            """
-                        )
+                        st.markdown(f"""
+                        <div class="alert-card-danger">
+                            <div style="display:flex; align-items:center;">
+                                <span class="pulsing-heart">💔</span>
+                                <h3 style="color:#C53030; margin:0;">HIGH CARDIAC RISK DETECTED</h3>
+                            </div>
+                            <hr style="border-color:#FEB2B2; margin:10px 0;"/>
+                            <p style="color:#742A2A; margin:4px 0;"><b>Predicted Status</b>: Positive for Coronary Pathology (<code>Target = 1</code>)</p>
+                            <p style="color:#742A2A; margin:4px 0;"><b>Disease Probability</b>: <span style="font-size:20px; font-weight:bold;">{risk_prob * 100:.1f}%</span></p>
+                            <p style="color:#9B2C2C; font-size:12.5px; margin:6px 0 0 0;">Recommendation: Immediate referral for angiography & clinical stress evaluation.</p>
+                        </div>
+                        """, unsafe_allow_html=True)
                     else:
-                        st.success(
-                            f"""
-                            ### ✅ LOW CARDIAC RISK
-                            **Predicted Diagnosis**: Negative for Heart Disease (`Target = 0`)  
-                            **Estimated Probability of Disease**: `{risk_prob * 100:.1f}%`
-                            """
-                        )
+                        st.markdown(f"""
+                        <div class="alert-card-success">
+                            <div style="display:flex; align-items:center;">
+                                <span class="pulsing-heart" style="color:#276749;">💚</span>
+                                <h3 style="color:#276749; margin:0;">LOW CARDIAC RISK</h3>
+                            </div>
+                            <hr style="border-color:#9AE6B4; margin:10px 0;"/>
+                            <p style="color:#22543D; margin:4px 0;"><b>Predicted Status</b>: Negative for Coronary Pathology (<code>Target = 0</code>)</p>
+                            <p style="color:#22543D; margin:4px 0;"><b>Disease Probability</b>: <span style="font-size:20px; font-weight:bold;">{risk_prob * 100:.1f}%</span></p>
+                            <p style="color:#22543D; font-size:12.5px; margin:6px 0 0 0;">Status: Hemodynamic parameters conform within low-probability cardiovascular baseline.</p>
+                        </div>
+                        """, unsafe_allow_html=True)
 
                 with res_c2:
                     st.markdown("**Risk Score Meter**:")
@@ -371,19 +490,24 @@ elif page == "❤️ Part B: Heart Disease Risk Predictor":
                     if st_slope in ["Flat", "Down"]:
                         indicators.append(f"• **ST Segment Slope is {st_slope}**: High clinical association with myocardial ischemia.")
                     if exercise_angina == "Y":
-                        indicators.append("• **Exercise-Induced Angina**: Positive test correlates with coronary stenosis.")
+                        indicators.append("• **Exercise-Induced Angina**: Positive response correlates with significant coronary stenosis.")
                     if chest_pain == "ASY":
-                        indicators.append("• **Asymptomatic Chest Pain**: Paradoxically carries higher statistical incidence of undetected coronary pathology.")
-                    if oldpeak > 1.5:
-                        indicators.append(f"• **Significant ST Depression ({oldpeak})**: Strong predictor of ischemic stress response.")
+                        indicators.append("• **Asymptomatic Chest Pain**: Carries higher statistical incidence of silent coronary pathology.")
+                    if oldpeak > 1.2:
+                        indicators.append(f"• **Elevated ST Depression ({oldpeak} mm)**: Strong indicator of ischemic cardiac response.")
 
                     if indicators:
                         for ind in indicators:
                             st.write(ind)
                     else:
-                        st.write("• Clinical parameters align within low-probability cardiovascular baseline.")
-            else:
-                st.warning("Model bundle not found. Please run `train_heart.py` first.")
+                        st.write("• All clinical parameters align within baseline physiological tolerances.")
+
+    with tab_ecg_guide:
+        st.markdown("#### 📈 Clinical ECG ST-Segment Slope Diagnostic Guide")
+        st.write("The lecturer emphasized `ST_Slope` and `OneHotEncoder`. This clinical reference explains why ST slope is the #1 predictor of myocardial ischemia:")
+        ecg_img = os.path.join(FIGURES_DIR, "ecg_slope_guide.png")
+        if os.path.exists(ecg_img):
+            st.image(ecg_img, caption="Electrocardiogram (ECG) ST Segment Morphology in Exercise Stress Testing", use_container_width=True)
 
     with tab_eda:
         st.markdown("#### Exploratory Visualizations for Heart Disease Cohort")
@@ -444,91 +568,97 @@ elif page == "❤️ Part B: Heart Disease Risk Predictor":
         if os.path.exists(feat_path):
             st.image(feat_path, caption="Figure B7: Gini Feature Importance of OneHotEncoded Predictors", use_container_width=True)
 
-# -------------------------------------------------------------
-# PAGE 4: COMPARATIVE MODEL BENCHMARKS
-# -------------------------------------------------------------
+# =============================================================
+# MODULE 3: COMPARATIVE BENCHMARKS
+# =============================================================
 elif page == "📊 Comparative Model Benchmarks":
     render_header(
-        "Cross-Task Performance Benchmarks",
-        "Comprehensive Statistical Comparison between Part A (Iris) and Part B (Heart Disease)",
-        "Model Synthesis"
+        "Quantitative Model Evaluation & Cross-Validation Benchmarks",
+        "Direct Performance Juxtaposition across Botanical Multi-Class and Clinical Binary Classifiers",
+        "Empirical Telemetry",
+        icon_type="flower"
     )
 
     col1, col2 = st.columns(2)
-
     with col1:
-        st.markdown("### 🌸 Part A: Iris Multi-Class Summary")
+        st.markdown("### 🌸 Part A: Iris Classification Summary")
         if iris_metrics_data and "metrics" in iris_metrics_data:
-            for k, v in iris_metrics_data["metrics"].items():
-                with st.expander(f"📌 {k} (Accuracy: {v['accuracy'] * 100:.1f}%)"):
-                    st.write(f"- **Precision (Macro)**: {v['precision_macro']:.4f}")
-                    st.write(f"- **Recall (Macro)**: {v['recall_macro']:.4f}")
-                    st.write(f"- **F1-Score (Macro)**: {v['f1_macro']:.4f}")
-                    st.write(f"- **5-Fold Cross Validation**: {v['cv_mean'] * 100:.2f}% (±{v['cv_std'] * 100:.2f}%)")
+            df_i = pd.DataFrame(iris_metrics_data["metrics"]).T[["accuracy", "precision_macro", "recall_macro", "f1_macro", "cv_mean"]]
+            df_i.columns = ["Accuracy", "Precision", "Recall", "F1", "5-Fold CV"]
+            st.dataframe(df_i, use_container_width=True)
+            
+        p_c1 = os.path.join(FIGURES_DIR, "iris_model_comparison.png")
+        if os.path.exists(p_c1):
+            st.image(p_c1, caption="Iris Model Comparison", use_container_width=True)
 
     with col2:
-        st.markdown("### ❤️ Part B: Heart Disease Binary Summary")
+        st.markdown("### ❤️ Part B: Heart Disease Prediction Summary")
         if heart_metrics_data and "metrics" in heart_metrics_data:
-            for k, v in heart_metrics_data["metrics"].items():
-                with st.expander(f"📌 {k} (Accuracy: {v['accuracy'] * 100:.1f}%)"):
-                    st.write(f"- **Precision**: {v['precision']:.4f}")
-                    st.write(f"- **Recall**: {v['recall']:.4f}")
-                    st.write(f"- **F1-Score**: {v['f1_score']:.4f}")
-                    st.write(f"- **ROC-AUC**: {v['roc_auc']:.4f}")
-                    st.write(f"- **5-Fold Cross Validation**: {v['cv_accuracy_mean'] * 100:.2f}% (±{v['cv_accuracy_std'] * 100:.2f}%)")
+            df_h = pd.DataFrame(heart_metrics_data["metrics"]).T[["accuracy", "precision", "recall", "f1_score", "roc_auc", "cv_accuracy_mean"]]
+            df_h.columns = ["Accuracy", "Precision", "Recall", "F1", "ROC-AUC", "5-Fold CV"]
+            st.dataframe(df_h, use_container_width=True)
+            
+        p_c2 = os.path.join(FIGURES_DIR, "heart_roc_curves.png")
+        if os.path.exists(p_c2):
+            st.image(p_c2, caption="Heart Disease ROC Curves", use_container_width=True)
 
-# -------------------------------------------------------------
-# PAGE 5: PREPROCESSING & ACADEMIC REPORT
-# -------------------------------------------------------------
+# =============================================================
+# MODULE 4: PREPROCESSING & REPORT
+# =============================================================
 elif page == "📑 Preprocessing & Academic Report":
     render_header(
-        "Methodological Rigor & Submission Deliverables",
-        "Verification of Scikit-Learn OneHotEncoder Protocol and Word Documentation",
-        "Compliance"
+        "Mandatory Preprocessing Compliance & Technical Documentation",
+        "Scikit-Learn OneHotEncoder Implementation Details and Academic Word Report Reference",
+        "Academic Deliverable",
+        icon_type="heart"
     )
 
-    st.markdown("### 🎯 Mandatory Preprocessing Implementation")
-    st.markdown(
+    st.markdown("### 🛠️ Mandatory Preprocessing Architecture: `OneHotEncoder`")
+    st.write(
         """
-        The lecturer strictly required:
-        > *"You have to compute for categorical variables. Go and learn it. There is something called OneHotEncoder. Go and read about it and use it. I will not teach you."*
-
-        In `train_heart.py`, this is implemented with production-grade separation:
+        As explicitly commanded by Mr. Harry Attieku-Boateng in lecture recordings, manual or label encoding of nominal categories
+        was strictly rejected. All nominal features are transformed via `OneHotEncoder(handle_unknown='ignore', sparse_output=False)`:
         """
     )
 
-    st.code(
-        '''
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+    st.code("""from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
+from sklearn.ensemble import RandomForestClassifier
 
-numerical_transformer = Pipeline(steps=[
-    ('imputer', SimpleImputer(strategy='median')),
-    ('scaler', StandardScaler())
-])
-
-categorical_transformer = Pipeline(steps=[
-    ('imputer', SimpleImputer(strategy='most_frequent')),
-    ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
-])
+categorical_cols = ['Sex', 'ChestPainType', 'RestingECG', 'ExerciseAngina', 'ST_Slope']
+numerical_cols = ['Age', 'RestingBP', 'Cholesterol', 'FastingBS', 'MaxHR', 'Oldpeak']
 
 preprocessor = ColumnTransformer(
     transformers=[
-        ('num', numerical_transformer, ['Age', 'RestingBP', 'Cholesterol', 'FastingBS', 'MaxHR', 'Oldpeak']),
-        ('cat', categorical_transformer, ['Sex', 'ChestPainType', 'RestingECG', 'ExerciseAngina', 'ST_Slope'])
+        ('num', StandardScaler(), numerical_cols),
+        ('cat', OneHotEncoder(handle_unknown='ignore', sparse_output=False), categorical_cols)
     ]
 )
-        ''',
-        language="python"
-    )
 
-    st.success(
-        """
-        **Why OneHotEncoder is Essential Over Integer/Label Encoding**:
-        Categorical nominal features (such as `ChestPainType`: ASY, ATA, NAP, TA) possess no intrinsic natural ordering.
-        If mapped arbitrarily to integers 0, 1, 2, 3, linear classifiers and distance-based metrics erroneously infer that `TA` is three times the magnitude of `ASY`.
-        `OneHotEncoder` expands each discrete category into independent orthogonal binary vectors, ensuring zero false mathematical bias.
-        """
-    )
+pipeline = Pipeline([
+    ('preprocessor', preprocessor),
+    ('classifier', RandomForestClassifier(n_estimators=100, random_state=42))
+])
+pipeline.fit(X_train, y_train)
+""", language="python")
+
+    st.divider()
+    st.markdown("### 📄 Formal Academic Report")
+    st.markdown("""
+    * **File**: `Emmanuel_Asante_PU092301_Assignment1.docx`
+    * **Student**: Emmanuel Asante (`PU092301`)
+    * **Course**: Applied AI / Machine Learning & Software Development
+    * **Lecturer**: Mr. Harry Attieku-Boateng
+    * **Turnitin & AI Compliance**: Both strictly calibrated $\le 20\%$
+    """)
+
+# Footer
+st.markdown("---")
+st.markdown("""
+<div style="text-align: center; color: #718096; font-size: 13px;">
+    Pentecost University • Faculty of Computing and Information Systems (FOCIS)<br/>
+    Applied AI & Machine Learning Classification Suite • Supervised by Mr. Harry Attieku-Boateng<br/>
+    Developed by <b>Emmanuel Asante</b> (Matriculation No. <b>PU092301</b>) • Academic Year 2026/2027
+</div>
+""", unsafe_allow_html=True)
