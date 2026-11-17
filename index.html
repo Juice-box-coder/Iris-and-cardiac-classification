@@ -167,8 +167,8 @@ nav {
 }
 .talk:hover .talk-sq { transform: translateX(3px); }
 
-/* Scroll Story Stage */
-#story { position: relative; height: 640vh; }
+/* Scroll Story Stage (Shortened for immediate ML suite access) */
+#story { position: relative; height: 180vh; }
 .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #dfe3e0; }
 .cam { position: absolute; inset: -9% -3% -3%; will-change: transform; }
 #cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
@@ -374,13 +374,67 @@ nav {
 /* THE ENTIRE SOLUTIONS & INTERACTIVE MACHINE LEARNING ENGINE   */
 /* ============================================================ */
 #sol {
-  position: relative; z-index: 5; margin-top: -30vh; background: #fff;
-  border-radius: 24px 24px 0 0; padding: 80px 36px 100px;
+  position: relative; z-index: 5; margin-top: -18vh; background: #fff;
+  border-radius: 24px 24px 0 0; padding: 42px 36px 90px;
   box-shadow: 0 -30px 60px rgba(16,41,26,.14);
 }
-.sol-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; margin-bottom: 50px; }
-.sol-head h2 { font-weight: 500; font-size: clamp(34px, 4vw, 56px); line-height: 1.05; letter-spacing: -.04em; max-width: 680px; margin-top: 18px; color: var(--ink); }
-.sol-head p { font-size: 15.5px; line-height: 1.6; max-width: 440px; color: #4a5a4f; }
+.sol-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; margin-bottom: 24px; }
+.sol-head h2 { font-weight: 500; font-size: clamp(32px, 3.8vw, 52px); line-height: 1.05; letter-spacing: -.04em; max-width: 680px; margin-top: 14px; color: var(--ink); }
+.sol-head p { font-size: 15px; line-height: 1.55; max-width: 440px; color: #4a5a4f; }
+
+/* Sticky Interactive Tab Switcher Bar */
+.tabs-nav-bar {
+  position: sticky;
+  top: 72px;
+  z-index: 55;
+  background: rgba(246, 248, 245, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(16, 41, 26, 0.15);
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 36px;
+  box-shadow: 0 10px 28px rgba(16, 41, 26, 0.08);
+  overflow-x: auto;
+}
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink2);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all .25s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.tab-btn:hover {
+  background: rgba(198, 243, 92, 0.28);
+  color: var(--ink);
+}
+.tab-btn.active {
+  background: var(--ink);
+  color: var(--lime);
+  border-color: var(--ink);
+  box-shadow: 0 4px 12px rgba(16, 41, 26, 0.2);
+}
+.tab-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  display: inline-block;
+}
 
 /* 3D Tilting Cards */
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 60px; }
@@ -681,9 +735,28 @@ SOWUTUOM • ELEV 82M</pre>
       <p>Supervised by Mr. Harry Attieku-Boateng. Authored by Emmanuel Asante (PU092301 / PUIT23210016). Dual production machine learning pipelines trained on verified physical datasets with strict zero data leakage.</p>
     </div>
 
+    <!-- Sticky Interactive Module Tab Bar -->
+    <div class="tabs-nav-bar" id="suite-tabs">
+      <button type="button" class="tab-btn active" data-tab="iris-section">
+        <span class="tab-dot"></span> 🌸 Part A: Iris Engine
+      </button>
+      <button type="button" class="tab-btn" data-tab="heart-section">
+        <span class="tab-dot"></span> 🫀 Part B: Cardiac Risk
+      </button>
+      <button type="button" class="tab-btn" data-tab="diagrams-section">
+        <span class="tab-dot"></span> 🖼️ Anatomical &amp; ECG Guides
+      </button>
+      <button type="button" class="tab-btn" data-tab="benchmarks-section">
+        <span class="tab-dot"></span> ⚡ Telemetry &amp; Benchmarks
+      </button>
+      <button type="button" class="tab-btn" data-tab="architecture-section">
+        <span class="tab-dot"></span> 🧠 OneHotEncoder Architecture
+      </button>
+    </div>
+
     <!-- 3D Tilting Overview Cards -->
     <div class="cards">
-      <article class="sol-card" tabindex="0" onclick="document.getElementById('iris-section').scrollIntoView({behavior:'smooth'})">
+      <article class="sol-card" tabindex="0" data-jump="iris-section">
         <div class="bg" style="background-image:url('./figures/iris_morphology_guide.png');"></div>
         <div class="ov"></div>
         <div class="top">
@@ -696,7 +769,7 @@ SOWUTUOM • ELEV 82M</pre>
         </div>
       </article>
 
-      <article class="sol-card" tabindex="0" onclick="document.getElementById('heart-section').scrollIntoView({behavior:'smooth'})">
+      <article class="sol-card" tabindex="0" data-jump="heart-section">
         <div class="bg" style="background-image:url('./figures/heart_pathology_diagram.png');"></div>
         <div class="ov"></div>
         <div class="top">
@@ -709,7 +782,7 @@ SOWUTUOM • ELEV 82M</pre>
         </div>
       </article>
 
-      <article class="sol-card" tabindex="0" onclick="document.getElementById('architecture-section').scrollIntoView({behavior:'smooth'})">
+      <article class="sol-card" tabindex="0" data-jump="architecture-section">
         <div class="bg" style="background-image:url('./figures/ecg_slope_guide.png');"></div>
         <div class="ov"></div>
         <div class="top">
@@ -1393,7 +1466,82 @@ pipeline.fit(X_train, y_train)
     }
   }
 
-  /* Navigation Jumps */
+  /* Universal Navigation & Tab Switcher Engine */
+  function navigateTo(targetId) {
+    const el = document.getElementById(targetId);
+    if (!el) return;
+
+    try {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) {}
+
+    const nav = document.getElementById('navbar');
+    const navH = nav ? nav.offsetHeight : 68;
+    const rect = el.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const targetY = rect.top + scrollTop - navH - 12;
+
+    window.scrollTo({
+      top: Math.max(0, targetY),
+      behavior: 'smooth'
+    });
+  }
+
+  // Handle Tab buttons
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const targetId = btn.dataset.tab;
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      navigateTo(targetId);
+    });
+  });
+
+  // Handle Navbar menu links, Station 07 feats, and cards
+  document.querySelectorAll('.menu a, .feats a, .cards .sol-card, a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const href = link.getAttribute('href');
+      let targetId = null;
+
+      if (link.dataset.jump) {
+        targetId = link.dataset.jump;
+      } else if (href && href.startsWith('#') && href.length > 1) {
+        targetId = href.substring(1);
+      }
+
+      if (targetId) {
+        e.preventDefault();
+        tabBtns.forEach(b => {
+          if (b.dataset.tab === targetId) b.classList.add('active');
+          else b.classList.remove('active');
+        });
+        navigateTo(targetId);
+      }
+    });
+  });
+
+  // ScrollSpy to highlight active tab as user scrolls
+  const trackedSections = ['iris-section', 'heart-section', 'diagrams-section', 'benchmarks-section', 'architecture-section'];
+  window.addEventListener('scroll', () => {
+    const navH = 140;
+    let current = '';
+    trackedSections.forEach(id => {
+      const section = document.getElementById(id);
+      if (section) {
+        const top = section.getBoundingClientRect().top;
+        if (top <= navH) current = id;
+      }
+    });
+    if (current) {
+      tabBtns.forEach(b => {
+        if (b.dataset.tab === current) b.classList.add('active');
+        else b.classList.remove('active');
+      });
+    }
+  }, { passive: true });
+
   document.getElementById('nav-home').addEventListener('click', e => {
     e.preventDefault();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1401,7 +1549,7 @@ pipeline.fit(X_train, y_train)
 
   hint.addEventListener('click', () => {
     const maxScroll = story.offsetHeight - window.innerHeight;
-    window.scrollTo({ top: story.offsetTop + maxScroll * 0.24, behavior: 'smooth' });
+    window.scrollTo({ top: story.offsetTop + maxScroll * 0.45, behavior: 'smooth' });
   });
 
   /* Modal controls */
