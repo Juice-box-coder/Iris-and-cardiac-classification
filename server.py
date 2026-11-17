@@ -2,7 +2,7 @@
 Standalone HTTP Server for Iris Classification Landing Page
 Course: Applied AI (ISE 402) - Pentecost University
 Lecturer: Mr. Harry Attieku-Boateng
-Student: Emmanuel Asante (PU092301 / PUIT23210016)
+Student: Emmanuel Asante (PUIT23210016)
 """
 
 import http.server

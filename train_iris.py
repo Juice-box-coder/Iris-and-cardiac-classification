@@ -2,7 +2,7 @@
 Assignment 1 - Part A: Iris Flower Classification Pipeline
 Course: Applied AI / Machine Learning & Software Development
 Lecturer: Mr. Harry Attieku-Boateng
-Student: Emmanuel Asante (ID: PU092301)
+Student: Emmanuel Asante (ID: PUIT23210016)
 
 This script implements:
 1. Loading the exact Iris dataset from 'data/iris.csv'.

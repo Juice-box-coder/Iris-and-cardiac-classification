@@ -25,7 +25,7 @@ from docx.oxml import parse_xml
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FIGURES_DIR = os.path.join(BASE_DIR, "figures")
 RESULTS_DIR = os.path.join(BASE_DIR, "results")
-OUTPUT_DOCX = os.path.join(BASE_DIR, "Emmanuel_Asante_PU092301_Assignment1.docx")
+OUTPUT_DOCX = os.path.join(BASE_DIR, "Emmanuel_Asante_PUIT23210016_Assignment1.docx")
 
 def set_cell_background(cell, fill_hex):
     tcPr = cell._tc.get_or_add_tcPr()
@@ -118,7 +118,7 @@ def create_report():
     r_l2_link.font.color.rgb = RGBColor(0x00, 0x66, 0xCC)
     r_l2_link.underline = True
 
-    r_meta = p_body.add_run("Student Name: Emmanuel Asante | Student ID: PU092301 | Lecturer: Mr. Harry Attieku-Boateng")
+    r_meta = p_body.add_run("Student Name: Emmanuel Asante | Student ID: PUIT23210016 | Lecturer: Mr. Harry Attieku-Boateng")
     r_meta.font.size = Pt(9.5)
     r_meta.italic = True
     r_meta.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
@@ -148,7 +148,7 @@ def create_report():
     meta_table.alignment = WD_TABLE_ALIGNMENT.CENTER
     meta_info = [
         ("Student Name:", "Emmanuel Asante"),
-        ("Student Identification:", "PU092301"),
+        ("Student Identification:", "PUIT23210016"),
         ("Course / Module:", "Applied AI / Machine Learning & Software Development"),
         ("Course Lecturer:", "Mr. Harry Attieku-Boateng")
     ]

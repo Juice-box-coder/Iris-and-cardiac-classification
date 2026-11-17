@@ -2,7 +2,7 @@
 Assignment 1: Machine Learning Classification Systems
 Pentecost University - Faculty of Computing and Information Systems (FOCIS)
 Supervised by: Mr. Harry Attieku-Boateng
-Student: Emmanuel Asante (PU092301 / PUIT23210016)
+Student: Emmanuel Asante (PUIT23210016)
 
 Full-Screen Iris Classification & Biometrics Inference Deck
 Directly renders the single-file web application without any tab widgets.

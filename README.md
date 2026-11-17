@@ -2,7 +2,7 @@
 **Course**: Applied AI / Machine Learning & Software Development  
 **Lecturer**: Mr. Harry Attieku-Boateng  
 **Student Name**: Emmanuel Asante  
-**Student ID**: PU092301  
+**Student ID**: PUIT23210016  
 **Deliverable**: Assignment 1 (10 Marks)  
 
 ---
@@ -11,7 +11,7 @@
 * 🌐 **Live Deployed Web Application (Vercel)**: [https://assignment1classification.vercel.app](https://assignment1classification.vercel.app)
 * 🌐 **Streamlit Mirror**: [https://harry-ai-classification.streamlit.app](https://harry-ai-classification.streamlit.app)
 * 📁 **GitHub Source Code Repository**: [https://github.com/emmanuel-asante/applied-ai-classification](https://github.com/emmanuel-asante/applied-ai-classification)
-* 📄 **Formal Academic Report**: `Emmanuel_Asante_PU092301_Assignment1.docx`
+* 📄 **Formal Academic Report**: `Emmanuel_Asante_PUIT23210016_Assignment1.docx`
 
 ---
 
