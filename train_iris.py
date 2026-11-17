@@ -2,9 +2,10 @@
 Assignment 1 - Part A: Iris Flower Classification Pipeline
 Course: Applied AI / Machine Learning & Software Development
 Lecturer: Mr. Harry Attieku-Boateng
+Student: Emmanuel Asante (ID: PU092301)
 
 This script implements:
-1. Loading the built-in Scikit-Learn Iris dataset.
+1. Loading the exact Iris dataset from 'data/iris.csv'.
 2. Comprehensive Exploratory Data Analysis (EDA) and visualizations.
 3. Train/Test Stratified Split and Feature Scaling.
 4. Model Training & Comparison (Logistic Regression, Random Forest, SVM, KNN).
@@ -22,7 +23,6 @@ matplotlib.use("Agg")  # Non-interactive headless backend
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
@@ -41,6 +41,7 @@ from sklearn.metrics import (
 
 # Output paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
 FIGURES_DIR = os.path.join(BASE_DIR, "figures")
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 RESULTS_DIR = os.path.join(BASE_DIR, "results")
@@ -50,28 +51,44 @@ for d in [FIGURES_DIR, MODELS_DIR, RESULTS_DIR]:
 
 def run_iris_pipeline():
     print("=" * 60)
-    print("PART A: IRIS FLOWER CLASSIFICATION")
+    print("PART A: IRIS FLOWER CLASSIFICATION USING DATA/IRIS.CSV")
     print("=" * 60)
 
-    # 1. Load Dataset
-    iris = load_iris(as_frame=True)
-    df = iris.frame
-    X = iris.data
-    y = iris.target
-    feature_names = iris.feature_names
-    target_names = iris.target_names
+    # 1. Load Dataset from data/iris.csv
+    csv_path = os.path.join(DATA_DIR, "iris.csv")
+    if not os.path.exists(csv_path):
+        raise FileNotFoundError(f"Iris dataset file not found at: {csv_path}")
+
+    print(f"Loading Iris dataset directly from: {csv_path}")
+    df = pd.read_csv(csv_path)
+
+    feature_names = ["sepal_length", "sepal_width", "petal_length", "petal_width"]
+    target_col = "species"
+
+    # Verify columns exist
+    for col in feature_names + [target_col]:
+        if col not in df.columns:
+            raise KeyError(f"Expected column '{col}' not found in {csv_path}. Available columns: {list(df.columns)}")
+
+    X = df[feature_names]
+    
+    # Target encoding: setosa -> 0, versicolor -> 1, virginica -> 2
+    unique_species = sorted(df[target_col].unique().tolist())
+    species_to_id = {name: idx for idx, name in enumerate(unique_species)}
+    id_to_species = {idx: name for idx, name in enumerate(unique_species)}
+    y = df[target_col].map(species_to_id)
+    target_names = np.array(unique_species)
 
     print(f"Dataset shape: {df.shape}")
-    print(f"Classes: {list(target_names)}")
-    print(f"Class distribution:\n{df['target'].value_counts().rename(index=dict(enumerate(target_names)))}\n")
+    print(f"Target classes: {list(target_names)}")
+    print(f"Class distribution:\n{df[target_col].value_counts()}\n")
 
     # 2. Exploratory Data Analysis (EDA) Plots
     sns.set_theme(style="whitegrid", palette="muted")
 
     # Figure A1: Pairplot of Features by Species
     df_plot = df.copy()
-    df_plot['species'] = df_plot['target'].map(lambda x: target_names[x])
-    pairplot = sns.pairplot(df_plot, hue='species', markers=["o", "s", "D"], diag_kind="kde", height=2.2)
+    pairplot = sns.pairplot(df_plot, hue=target_col, markers=["o", "s", "D"], diag_kind="kde", height=2.2)
     pairplot.fig.subplots_adjust(top=0.93)
     pairplot.fig.suptitle("Iris Flower Feature Distributions and Pairwise Relationships", fontsize=13, weight="bold")
     pairplot_path = os.path.join(FIGURES_DIR, "iris_eda_pairplot.png")
@@ -98,9 +115,9 @@ def run_iris_pipeline():
 
     # 4. Models to Evaluate
     models = {
+        "Support Vector Machine (SVC)": SVC(kernel="rbf", probability=True, random_state=42),
         "Logistic Regression": LogisticRegression(max_iter=300, random_state=42),
         "Random Forest": RandomForestClassifier(n_estimators=100, random_state=42),
-        "Support Vector Machine (SVC)": SVC(kernel="rbf", probability=True, random_state=42),
         "K-Nearest Neighbors (KNN)": KNeighborsClassifier(n_neighbors=5)
     }
 
@@ -184,13 +201,15 @@ def run_iris_pipeline():
     plt.close()
     print(f"Saved: {cm_path}")
 
-    # 7. Save Best Pipeline and Scaler
+    # 7. Save Best Pipeline and Metadata
     best_pipeline = fitted_pipelines[best_model_name]
     model_save_path = os.path.join(MODELS_DIR, "iris_best_pipeline.joblib")
     joblib.dump({
         "pipeline": best_pipeline,
         "feature_names": feature_names,
         "target_names": target_names.tolist(),
+        "species_to_id": species_to_id,
+        "id_to_species": id_to_species,
         "best_model_name": best_model_name
     }, model_save_path)
     print(f"Saved best model: {model_save_path}")
@@ -202,11 +221,12 @@ def run_iris_pipeline():
             "metrics": metrics_summary,
             "best_model": best_model_name,
             "target_names": target_names.tolist(),
-            "feature_names": feature_names
+            "feature_names": feature_names,
+            "data_source": "data/iris.csv"
         }, f, indent=4)
     print(f"Saved metrics summary: {metrics_path}")
 
-    print("\nIris classification pipeline completed successfully.")
+    print("\nIris classification pipeline executed successfully on data/iris.csv.")
     return metrics_summary
 
 if __name__ == "__main__":
