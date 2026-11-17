@@ -19,26 +19,34 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Strip away all Streamlit container paddings, headers, and footers
+# Strip away all Streamlit container paddings, headers, and footers; lock viewport to inner web app
 st.markdown("""
 <style>
-    /* Remove default Streamlit chrome */
-    #MainMenu, header, footer { visibility: hidden !important; display: none !important; }
-    section[data-testid="stSidebar"] { display: none !important; }
-    .block-container {
+    /* Lock parent Streamlit window so ONLY the inner application scrolls */
+    html, body, [data-testid="stAppViewContainer"], .main, .block-container, section.main, div[data-testid="stVerticalBlock"] {
+        overflow: hidden !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
         padding: 0 !important;
         margin: 0 !important;
-        max-width: 100% !important;
-        width: 100% !important;
     }
-    div[data-testid="stVerticalBlock"] {
-        gap: 0 !important;
+    #MainMenu, header, footer { visibility: hidden !important; display: none !important; }
+    section[data-testid="stSidebar"] { display: none !important; }
+    div[data-testid="stCustomComponentV1"] {
+        height: 100vh !important;
+        width: 100vw !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
     iframe {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
         width: 100vw !important;
         height: 100vh !important;
         border: none !important;
         display: block !important;
+        z-index: 999999 !important;
     }
 </style>
 """, unsafe_allow_html=True)

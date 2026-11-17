@@ -167,8 +167,8 @@ nav {
 }
 .talk:hover .talk-sq { transform: translateX(3px); }
 
-/* Scroll Story Stage (Cinematic 5-beat scrollytelling duration) */
-#story { position: relative; height: 600vh; }
+/* Scroll Story Stage (Perfect 350vh continuous cinematic pacing) */
+#story { position: relative; height: 350vh; }
 .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #dfe3e0; }
 .cam { position: absolute; inset: -9% -3% -3%; will-change: transform; }
 #cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
@@ -181,7 +181,7 @@ nav {
 }
 @keyframes drift { from { transform: translate3d(0,0,0); } to { transform: translate3d(4%, -2%, 0); } }
 
-#push { position: absolute; left: 0; top: 0; width: 2px; height: 2px; opacity: 0; pointer-events: none; }
+#push { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; z-index: 1; pointer-events: none; }
 
 /* Fog Bank */
 .fog {
@@ -274,13 +274,12 @@ nav {
 
 /* L2 Vision */
 .l2 { visibility: hidden; }
-.vision { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: min(820px, 90vw); color: #fff; text-align: center; }
+.vision { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: min(820px, 90vw); color: var(--ink); text-align: center; }
 .vision h2 {
-  font-weight: 500; font-size: clamp(34px, 4.6vw, 68px); line-height: 1.05; letter-spacing: -.04em;
-  margin: 18px 0 20px; text-shadow: 0 2px 40px rgba(10,30,15,.55), 0 1px 3px rgba(10,30,15,.3);
+  font-weight: 600; font-size: clamp(34px, 4.6vw, 64px); line-height: 1.08; letter-spacing: -.03em;
+  margin: 18px 0 20px; color: var(--ink); text-shadow: 0 0 35px rgba(255,255,255,.98), 0 2px 10px rgba(255,255,255,.9);
 }
-.vision h2 .w { display: inline-block; will-change: transform, opacity, filter; }
-.vision p { font-size: 16px; line-height: 1.5; text-shadow: 0 1px 14px rgba(10,30,15,.7); will-change: transform, opacity; }
+.vision p { font-size: 17px; line-height: 1.55; color: #1c3624; text-shadow: 0 0 24px rgba(255,255,255,.98); font-weight: 500; }
 
 /* L3 Accounting & Hotspots */
 .l3 { visibility: hidden; }
@@ -590,12 +589,11 @@ table.bench-table tr.champion td { font-weight: 700; color: #2e6008; background:
   <section id="story">
     <div class="stage">
       <div class="cam" id="camB">
+        <video id="push" muted playsinline preload="auto" loop crossorigin="anonymous" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261106_025717_906b686d-9a9a-4dea-bab4-ae2454f8390e.mp4"></video>
         <canvas id="cv"></canvas>
         <img class="plate" id="plate" src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261106_031618_8ce6dca1-972d-429d-8d13-bf0691c37848.png&w=2400&q=88" alt="Floating moss island suspended in mist" referrerpolicy="no-referrer">
         <div class="mist" aria-hidden="true"></div>
       </div>
-
-      <video id="push" muted playsinline preload="auto" crossorigin="anonymous" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261106_025717_906b686d-9a9a-4dea-bab4-ae2454f8390e.mp4"></video>
 
       <div class="fog" id="fog" aria-hidden="true">
         <div class="f0"></div>
@@ -1539,41 +1537,53 @@ SOWUTUOM • ELEV 82M</pre>
     sx += (mx - sx) * .06;
     sy += (my - sy) * .06;
 
-    /* Video Scrub */
-    const vp = ease(seg(sp, .05, .70));
+    /* Video Scrubbing (Direct currentTime + Canvas cache fallback) */
+    const vp = ease(seg(sp, .03, .78));
+    if (vid.duration && !isNaN(vid.duration)) {
+      const targetTime = Math.min(vid.duration - 0.04, Math.max(0, vp * vid.duration));
+      if (Math.abs(vid.currentTime - targetTime) > 0.04) {
+        vid.currentTime = targetTime;
+      }
+    }
     want = Math.round(vp * (NF - 1));
     drawWant();
 
-    /* Camera Transform */
-    const camTf = `translate3d(${-sx * 18}px, ${-sy * 12 + (1 - vp) * window.innerHeight * .06}px, 0) scale(${1 + .02 * (1 - vp)})`;
+    /* Camera Transform: Dynamic Zoom and Parallax (Continuous motion) */
+    const camTf = `translate3d(${-sx * 18}px, ${-sy * 12 + (1 - vp) * window.innerHeight * .06}px, 0) scale(${1 + .28 * vp})`;
     camB.style.transform = camTf;
     camF.style.transform = camTf;
 
-    /* Hero Hand-off */
-    const ho = shown < 0 ? 0 : (shown === 0 ? seg(sp, .06, .105) : 1);
-    const plateOp = 1 - ho;
+    /* Hero Hand-off with Resilient Backdrop (Guarantees zero blank space) */
+    const hasActiveVideo = cached > 8 || (vid.readyState >= 2 && !vid.error && vid.currentTime > 0.1);
+    let plateOp;
+    if (hasActiveVideo) {
+      plateOp = 1 - seg(sp, .06, .20);
+    } else {
+      // Keep stunning high-res island visible throughout the scroll so it NEVER turns blank!
+      plateOp = Math.max(0.68, 1 - seg(sp, .25, .85) * 0.32);
+    }
     plate.style.opacity = plateOp;
-    plate.style.visibility = plateOp > 0 ? 'visible' : 'hidden';
+    plate.style.visibility = plateOp > 0.01 ? 'visible' : 'hidden';
     camF.style.opacity = plateOp;
-    camF.style.visibility = plateOp > 0 ? 'visible' : 'hidden';
+    camF.style.visibility = plateOp > 0.01 ? 'visible' : 'hidden';
 
-    /* L0 & L1 */
-    const h = seg(sp, .02, .1);
+    /* L0 & L1 (Hero Headline & HUD) */
+    const h = seg(sp, .01, .16);
     heroCopy.style.transform = `translate3d(${-sx * 10}px, ${-h * 80 - sy * 6}px, 0) scale(${1 + h * .12})`;
     heroCopy.style.filter = `blur(${h * 14}px)`;
     heroCopy.style.opacity = 1 - h;
     l0.style.visibility = h < 1 ? 'visible' : 'hidden';
 
-    const hudOp = 1 - seg(sp, .02, .08);
+    const hudOp = 1 - seg(sp, .02, .12);
     hud.style.transform = `translate3d(${sx * 26}px, ${sy * 18 - h * 40}px, 0)`;
     hud.style.opacity = hudOp;
-    const capOp = 1 - seg(sp, .01, .05);
+    const capOp = 1 - seg(sp, .01, .08);
     caption.style.opacity = capOp;
     hint.style.opacity = capOp;
     l1.style.visibility = h < 1 ? 'visible' : 'hidden';
 
-    /* Floating Rocks */
-    const fp = seg(sp, .02, .2);
+    /* Floating Rocks: 3D Fly-By */
+    const fp = seg(sp, .02, .38);
     const fe = fp * fp;
     rocks.forEach(rk => {
       if (fp >= 1) {
@@ -1584,19 +1594,19 @@ SOWUTUOM • ELEV 82M</pre>
       const rx = parseFloat(rk.dataset.x);
       const ry = parseFloat(rk.dataset.y);
       const rd = parseFloat(rk.dataset.d);
-      rk.style.transform = `translate3d(${rx * fp * 70 + sx * -24 * rd}vw, ${ry * fp * 60 + sy * -16 * rd}vh, 0) scale(${1 + fe * 1.6 * rd})`;
+      rk.style.transform = `translate3d(${rx * fp * 75 + sx * -24 * rd}vw, ${ry * fp * 65 + sy * -16 * rd}vh, 0) scale(${1 + fe * 1.8 * rd})`;
       rk.style.filter = `blur(${fe * 5 * rd}px)`;
     });
 
     /* Fog */
-    const fg = ease(seg(sp, .38, .47));
+    const fg = ease(seg(sp, .34, .48));
     fog.style.visibility = fg > 0 ? 'visible' : 'hidden';
     fog.style.opacity = fg;
     fog.style.transform = `translate3d(${(fg - 1) * 18 + sx * -10}vw, ${sy * -6}px, 0)`;
 
-    /* Vision L2 */
-    const vIn = seg(sp, .16, .27);
-    const vOut = seg(sp, .34, .42);
+    /* Vision L2: Seamlessly appears right as Hero fades (Zero gap!) */
+    const vIn = seg(sp, .12, .24);
+    const vOut = seg(sp, .36, .45);
     const vVis = vIn > 0 && vOut < 1;
     l2.style.visibility = vVis ? 'visible' : 'hidden';
     if (vVis) {
@@ -1614,9 +1624,9 @@ SOWUTUOM • ELEV 82M</pre>
       vSub.style.transform = vMetaTf;
     }
 
-    /* Accounting & Hotspots L3 */
-    const aIn = seg(sp, .45, .55);
-    const aOut = seg(sp, .63, .68);
+    /* Accounting & Hotspots L3: Seamless transition (Zero gap!) */
+    const aIn = seg(sp, .40, .52);
+    const aOut = seg(sp, .64, .72);
     const aVis = aIn > 0 && aOut < 1;
     l3.style.visibility = aVis ? 'visible' : 'hidden';
     if (aVis) {
@@ -1627,14 +1637,14 @@ SOWUTUOM • ELEV 82M</pre>
         w.style.filter = `blur(${(1 - k) * 6 + aOut * 10}px)`;
       });
       spots.forEach((s, i) => {
-        const k = seg(sp, .49 + i * .02, .53 + i * .02);
+        const k = seg(sp, .46 + i * .02, .51 + i * .02);
         s.style.transform = `translate3d(${sx * -30}px, ${sy * -20}px, 0) scale(${k * (1 - aOut)})`;
       });
     }
 
-    /* Station L4 */
-    const sIn = seg(sp, .72, .82);
-    const cIn = ease(seg(sp, .74, .86));
+    /* Station L4: Telemetry Suite */
+    const sIn = seg(sp, .68, .78);
+    const cIn = ease(seg(sp, .70, .84));
     const sVis = sIn > 0 || cIn > 0;
     l4.style.visibility = sVis ? 'visible' : 'hidden';
     if (sVis) {
