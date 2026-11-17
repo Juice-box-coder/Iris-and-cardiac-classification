@@ -4,8 +4,8 @@ Pentecost University - Faculty of Computing and Information Systems (FOCIS)
 Supervised by: Mr. Harry Attieku-Boateng
 Student: Emmanuel Asante (PU092301 / PUIT23210016)
 
-Full-Screen Mossline Scrollytelling & Machine Learning Deck
-Directly renders the single-file Mossline web application without any tab widgets.
+Full-Screen Iris Classification & Biometrics Inference Deck
+Directly renders the single-file web application without any tab widgets.
 """
 
 import os
@@ -14,8 +14,7 @@ import streamlit.components.v1 as components
 
 # Configure Full-Width Page
 st.set_page_config(
-    page_title="Mossline — Applied AI Classification Deck",
-    page_icon="🌿",
+    page_title="Iris Classification & Biometrics Deck",
     layout="wide",
     initial_sidebar_state="collapsed"
 )

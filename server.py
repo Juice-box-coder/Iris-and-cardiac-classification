@@ -1,5 +1,5 @@
 """
-Standalone HTTP Server for Mossline Applied AI Landing Page
+Standalone HTTP Server for Iris Classification Landing Page
 Course: Applied AI (ISE 402) - Pentecost University
 Lecturer: Mr. Harry Attieku-Boateng
 Student: Emmanuel Asante (PU092301 / PUIT23210016)
@@ -20,8 +20,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 def run():
     os.chdir(DIRECTORY)
     with socketserver.TCPServer(("", PORT), Handler) as httpd:
-        print(f"🌿 Mossline AI Classification Deck running at http://localhost:{PORT}")
-        print(f"👉 Opening your browser automatically...")
+        print(f"Iris Classification Deck running at http://localhost:{PORT}")
+        print(f"Opening your browser automatically...")
         webbrowser.open(f"http://localhost:{PORT}/index.html")
         try:
             httpd.serve_forever()

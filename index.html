@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mossline — Applied AI Classification & Biometrics | Pentecost University</title>
+<title>Iris Classification & Biometrics | Pentecost University</title>
 <meta name="description" content="Pentecost University FOCIS — Applied Machine Learning Classification & Biometrics Inference Deck supervised by Mr. Harry Attieku-Boateng. Developed by Emmanuel Asante.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -564,12 +564,12 @@ table.bench-table tr.champion td { font-weight: 700; color: #2e6008; background:
 <body>
 
 <nav id="navbar">
-  <a href="#story" class="brand" id="nav-home" aria-label="Mossline Home">
+  <a href="#story" class="brand" id="nav-home" aria-label="Iris Classification Home">
     <svg viewBox="0 0 32 32" aria-hidden="true">
       <path d="M16 2l12 7v14l-12 7-12-7V9z" fill="currentColor"/>
       <path d="M16 8c-4 4-5 9-1 16 1-5 4-9 8-11-3 0-5 1-7 3 0-3 0-5 0-8z" fill="#c6f35c"/>
     </svg>
-    <span>Mossline</span>
+    <span>Iris Classification</span>
   </a>
 
   <div class="menu">
@@ -738,19 +738,19 @@ SOWUTUOM • ELEV 82M</pre>
     <!-- Sticky Interactive Module Tab Bar -->
     <div class="tabs-nav-bar" id="suite-tabs">
       <button type="button" class="tab-btn active" data-tab="iris-section">
-        <span class="tab-dot"></span> 🌸 Part A: Iris Engine
+        <span class="tab-dot"></span> Part A: Iris Engine
       </button>
       <button type="button" class="tab-btn" data-tab="heart-section">
-        <span class="tab-dot"></span> 🫀 Part B: Cardiac Risk
+        <span class="tab-dot"></span> Part B: Cardiac Risk
       </button>
       <button type="button" class="tab-btn" data-tab="diagrams-section">
-        <span class="tab-dot"></span> 🖼️ Anatomical &amp; ECG Guides
+        <span class="tab-dot"></span> Anatomical &amp; ECG Guides
       </button>
       <button type="button" class="tab-btn" data-tab="benchmarks-section">
-        <span class="tab-dot"></span> ⚡ Telemetry &amp; Benchmarks
+        <span class="tab-dot"></span> Telemetry &amp; Benchmarks
       </button>
       <button type="button" class="tab-btn" data-tab="architecture-section">
-        <span class="tab-dot"></span> 🧠 OneHotEncoder Architecture
+        <span class="tab-dot"></span> OneHotEncoder Architecture
       </button>
     </div>
 
@@ -988,7 +988,7 @@ SOWUTUOM • ELEV 82M</pre>
           </div>
 
           <div style="margin-top:18px;">
-            <button type="button" class="preset-btn" style="width:100%;height:38px;background:var(--lime);font-size:11px;" onclick="calculateCardiacRisk()">⚡ COMPUTE CLINICAL DIAGNOSTIC RISK</button>
+            <button type="button" class="preset-btn" style="width:100%;height:38px;background:var(--lime);font-size:11px;" onclick="calculateCardiacRisk()">COMPUTE CLINICAL DIAGNOSTIC RISK</button>
           </div>
         </div>
 
@@ -1864,7 +1864,7 @@ window.calculateCardiacRisk = () => {
   if (isHighRisk) {
     resultBox.style.borderLeftColor = 'var(--danger)';
     badge.className = 'chip-danger';
-    badge.textContent = '⚠️ HIGH CARDIAC RISK';
+    badge.textContent = 'HIGH CARDIAC RISK';
     probText.style.color = 'var(--danger)';
     probText.textContent = `${(prob * 100).toFixed(1)}% PATHOLOGICAL RISK`;
     verdict.style.color = 'var(--danger)';
@@ -1872,7 +1872,7 @@ window.calculateCardiacRisk = () => {
   } else {
     resultBox.style.borderLeftColor = 'var(--lime)';
     badge.className = 'chip';
-    badge.textContent = '✅ LOW CARDIAC RISK';
+    badge.textContent = 'LOW CARDIAC RISK';
     probText.style.color = 'var(--lime)';
     probText.textContent = `${(prob * 100).toFixed(1)}% PROBABILITY`;
     verdict.style.color = 'var(--lime)';
