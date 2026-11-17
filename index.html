@@ -167,8 +167,8 @@ nav {
 }
 .talk:hover .talk-sq { transform: translateX(3px); }
 
-/* Scroll Story Stage (Shortened for immediate ML suite access) */
-#story { position: relative; height: 180vh; }
+/* Scroll Story Stage (Cinematic 5-beat scrollytelling duration) */
+#story { position: relative; height: 600vh; }
 .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #dfe3e0; }
 .cam { position: absolute; inset: -9% -3% -3%; will-change: transform; }
 #cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
@@ -374,7 +374,7 @@ nav {
 /* THE ENTIRE SOLUTIONS & INTERACTIVE MACHINE LEARNING ENGINE   */
 /* ============================================================ */
 #sol {
-  position: relative; z-index: 5; margin-top: -18vh; background: #fff;
+  position: relative; z-index: 5; margin-top: 0; background: #fff;
   border-radius: 24px 24px 0 0; padding: 42px 36px 90px;
   box-shadow: 0 -30px 60px rgba(16,41,26,.14);
 }
@@ -1495,8 +1495,7 @@ SOWUTUOM • ELEV 82M</pre>
   });
 
   hint.addEventListener('click', () => {
-    const maxScroll = story.offsetHeight - window.innerHeight;
-    window.scrollTo({ top: story.offsetTop + maxScroll * 0.45, behavior: 'smooth' });
+    navigateTo('iris-section');
   });
 
   /* Modal controls */
