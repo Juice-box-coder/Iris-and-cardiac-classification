@@ -37,8 +37,8 @@ html, body {
   font-family: var(--sans);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
+  overflow-x: clip;
+  
 }
 main {
   position: relative;
@@ -192,7 +192,7 @@ nav {
 .talk:hover .talk-sq { transform: translateX(3px); }
 
 /* Scroll Story Stage */
-#story { position: relative; height: 220vh; z-index: 1; }
+#story { position: relative; height: 340vh; z-index: 1; }
 .stage {
   position: -webkit-sticky;
   position: sticky;
@@ -319,8 +319,8 @@ nav {
 .l3 { visibility: hidden; }
 .acct {
   position: absolute; left: 34px; top: 14vh; width: min(580px, 86vw);
-  color: var(--ink); font-size: clamp(20px, 1.9vw, 29px); line-height: 1.18; letter-spacing: -.02em;
-  text-shadow: 0 0 24px rgba(255,255,255,.8);
+  color: #fff; font-size: clamp(20px, 1.9vw, 29px); line-height: 1.18; letter-spacing: -.02em;
+  text-shadow: 0 2px 24px rgba(10,30,15,.7), 0 1px 3px rgba(10,30,15,.4);
 }
 .acct .w { display: inline-block; will-change: opacity, filter; }
 
@@ -353,8 +353,8 @@ nav {
 .l4 { visibility: hidden; }
 .cred {
   position: absolute; left: 34px; top: 13vh; max-width: 400px;
-  color: var(--ink); font-size: clamp(22px, 2vw, 30px); line-height: 1.1; letter-spacing: -.025em;
-  text-shadow: 0 0 24px rgba(255,255,255,.8); will-change: transform, opacity, filter;
+  color: #fff; font-size: clamp(22px, 2vw, 30px); line-height: 1.1; letter-spacing: -.025em;
+  text-shadow: 0 2px 24px rgba(10,30,15,.7), 0 1px 3px rgba(10,30,15,.4); will-change: transform, opacity, filter;
 }
 .cred-tag {
   display: flex; width: max-content; background: var(--lime); color: var(--ink);
@@ -407,7 +407,7 @@ nav {
 /* THE ENTIRE SOLUTIONS & INTERACTIVE MACHINE LEARNING ENGINE   */
 /* ============================================================ */
 #sol {
-  position: relative; z-index: 10; margin-top: -16vh; background: #fff;
+  position: relative; z-index: 10; margin-top: -100vh; background: #fff;
   border-radius: 24px 24px 0 0; padding: 42px 36px 90px;
   box-shadow: 0 -30px 60px rgba(16,41,26,.14);
 }
@@ -1582,7 +1582,7 @@ SOWUTUOM • ELEV 82M</pre>
     camF.style.transform = camTf;
 
     /* Seamless Dissolve: Floating Island -> Eye-Level Panoramic Landscape */
-    const islandFade = seg(sp, .07, .18);
+    const islandFade = seg(sp, .05, .16);
     const plateOp = 1 - islandFade;
     plate.style.opacity = plateOp;
     plate.style.visibility = plateOp > 0 ? 'visible' : 'hidden';
@@ -1592,22 +1592,22 @@ SOWUTUOM • ELEV 82M</pre>
     landPlate.style.visibility = 'visible';
 
     /* L0 & L1 (Hero Headline & HUD) */
-    const h = seg(sp, .01, .14);
+    const h = seg(sp, .01, .12);
     heroCopy.style.transform = `translate3d(${-sx * 10}px, ${-h * 80 - sy * 6}px, 0) scale(${1 + h * .12})`;
     heroCopy.style.filter = `blur(${h * 14}px)`;
     heroCopy.style.opacity = 1 - h;
     l0.style.visibility = h < 1 ? 'visible' : 'hidden';
 
-    const hudOp = 1 - seg(sp, .01, .10);
+    const hudOp = 1 - seg(sp, .01, .08);
     hud.style.transform = `translate3d(${sx * 26}px, ${sy * 18 - h * 40}px, 0)`;
     hud.style.opacity = hudOp;
-    const capOp = 1 - seg(sp, .01, .06);
+    const capOp = 1 - seg(sp, .01, .05);
     caption.style.opacity = capOp;
     hint.style.opacity = capOp;
     l1.style.visibility = h < 1 ? 'visible' : 'hidden';
 
     /* Floating Rocks: 3D Fly-By */
-    const fp = seg(sp, .02, .26);
+    const fp = seg(sp, .02, .20);
     const fe = fp * fp;
     rocks.forEach(rk => {
       if (fp >= 1) {
