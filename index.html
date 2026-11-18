@@ -192,7 +192,7 @@ nav {
 .talk:hover .talk-sq { transform: translateX(3px); }
 
 /* Scroll Story Stage */
-#story { position: relative; height: 340vh; z-index: 1; }
+#story { position: relative; height: 500vh; z-index: 1; }
 .stage {
   position: -webkit-sticky;
   position: sticky;
@@ -700,24 +700,24 @@ SOWUTUOM • ELEV 82M</pre>
       <div class="layer l3" id="l3">
         <p class="acct" id="acct"></p>
 
-        <button type="button" class="spot" style="left:12%;top:58%" data-jump="iris-section">
+        <button type="button" class="spot" style="left:19%;top:62%" data-jump="iris-section">
           <span class="dot" aria-hidden="true"></span>
           <span class="lab">Sepal Calyx<em>5.4 cm &bull; Feature 1</em></span>
         </button>
 
-        <button type="button" class="spot" style="left:33%;top:41%" data-jump="iris-section">
+        <button type="button" class="spot" style="left:36%;top:34%" data-jump="iris-section">
           <span class="dot" aria-hidden="true"></span>
           <span class="lab">Petal Corolla<em>1.7 cm &bull; Feature 3</em></span>
         </button>
 
-        <button type="button" class="spot" style="left:70%;top:66%" data-jump="heart-section">
-          <span class="dot" aria-hidden="true"></span>
-          <span class="lab">ECG ST-Slope<em>Flat / Down &bull; Risk</em></span>
-        </button>
-
-        <button type="button" class="spot" style="left:83%;top:47%" data-jump="heart-section">
+        <button type="button" class="spot" style="left:64%;top:35%" data-jump="heart-section">
           <span class="dot" aria-hidden="true"></span>
           <span class="lab">Vitals Stream<em>BP 135 &bull; MaxHR 138</em></span>
+        </button>
+
+        <button type="button" class="spot" style="left:65%;top:68%" data-jump="heart-section">
+          <span class="dot" aria-hidden="true"></span>
+          <span class="lab">ECG ST-Slope<em>Flat / Down &bull; Risk</em></span>
         </button>
       </div>
 
@@ -1628,9 +1628,9 @@ SOWUTUOM • ELEV 82M</pre>
     fog.style.opacity = fg;
     fog.style.transform = `translate3d(${(fg - 1) * 18 + sx * -10}vw, ${sy * -6}px, 0)`;
 
-    /* Vision L2: Appears cleanly over open landscape (sp = .16 to .36) */
-    const vIn = seg(sp, .16, .27);
-    const vOut = seg(sp, .34, .42);
+    /* Vision L2: Appears cleanly over open landscape (sp = .15 to .38) */
+    const vIn = seg(sp, .15, .25);
+    const vOut = seg(sp, .33, .39);
     const vVis = vIn > 0 && vOut < 1;
     l2.style.visibility = vVis ? 'visible' : 'hidden';
     if (vVis) {
@@ -1648,9 +1648,9 @@ SOWUTUOM • ELEV 82M</pre>
       vSub.style.transform = vMetaTf;
     }
 
-    /* Accounting & Hotspots L3: Seamless transition (sp = .42 to .64) */
-    const aIn = seg(sp, .42, .54);
-    const aOut = seg(sp, .62, .70);
+    /* Accounting & Hotspots L3: Seamless transition (sp = .38 to .58) */
+    const aIn = seg(sp, .38, .46);
+    const aOut = seg(sp, .54, .59);
     const aVis = aIn > 0 && aOut < 1;
     l3.style.visibility = aVis ? 'visible' : 'hidden';
     if (aVis) {
@@ -1661,30 +1661,35 @@ SOWUTUOM • ELEV 82M</pre>
         w.style.filter = `blur(${(1 - k) * 6 + aOut * 10}px)`;
       });
       spots.forEach((s, i) => {
-        const k = seg(sp, .46 + i * .02, .51 + i * .02);
+        const k = seg(sp, .40 + i * .02, .46 + i * .02);
         s.style.transform = `translate3d(${sx * -30}px, ${sy * -20}px, 0) scale(${k * (1 - aOut)})`;
       });
     }
 
-    /* Station L4: Telemetry Suite (sp = .66 to .82) */
-    const sIn = seg(sp, .66, .76);
-    const cIn = ease(seg(sp, .68, .82));
-    const sVis = sIn > 0 || cIn > 0;
+    /* Station L4: Telemetry Suite (Complete 100% animation before solutions overlay) */
+    const sIn = seg(sp, .56, .64);
+    const cIn = ease(seg(sp, .58, .68));
+    const sOut = seg(sp, .78, .88);
+    const sVis = (sIn > 0 || cIn > 0) && sOut < 1;
     l4.style.visibility = sVis ? 'visible' : 'hidden';
     if (sVis) {
-      cred.style.opacity = sIn;
-      cred.style.transform = `translate3d(0, ${(1 - sIn) * 30}px, 0)`;
-      cred.style.filter = `blur(${(1 - sIn) * 8}px)`;
+      const fadeOut = 1 - sOut;
+      cred.style.opacity = sIn * fadeOut;
+      cred.style.transform = `translate3d(0, ${(1 - sIn) * 30 - sOut * 40}px, 0)`;
+      cred.style.filter = `blur(${(1 - sIn) * 8 + sOut * 8}px)`;
 
-      card.style.opacity = cIn;
-      card.style.transform = `perspective(900px) translate3d(${sx * -14}px, ${(1 - cIn) * 60 + sy * -10}px, 0) rotateY(${sx * 8}deg) rotateX(${-sy * 8}deg)`;
+      card.style.opacity = cIn * fadeOut;
+      card.style.transform = `perspective(900px) translate3d(${sx * -14}px, ${(1 - cIn) * 60 + sy * -10 - sOut * 40}px, 0) rotateY(${sx * 8}deg) rotateX(${-sy * 8}deg)`;
 
-      numEl.textContent = Math.round(97 * seg(sp, .74, .88));
-      spark.style.strokeDashoffset = sparkLen * (1 - seg(sp, .75, .90));
+      // Complete count-up to 97% by sp = 0.71 (stays at 97% full score)
+      numEl.textContent = Math.round(97 * seg(sp, .60, .71));
+      // Complete sparkline drawing by sp = 0.72 (fully drawn across all folds)
+      spark.style.strokeDashoffset = sparkLen * (1 - seg(sp, .61, .72));
 
       feats.forEach((f, i) => {
-        const k = ease(seg(sp, .74 + i * .025, .80 + i * .025));
-        f.style.opacity = k;
+        // Complete feature slide-in by sp = 0.73
+        const k = ease(seg(sp, .61 + i * .025, .67 + i * .025));
+        f.style.opacity = k * fadeOut;
         f.style.transform = `translateX(${(1 - k) * 40}px)`;
       });
     }
