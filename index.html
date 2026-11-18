@@ -528,6 +528,15 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 .result-box {
   background: #142a1b; border-radius: 12px; padding: 24px; color: #fff; margin-bottom: 20px;
   box-shadow: 0 10px 24px rgba(10,25,15,.25); border-left: 6px solid var(--lime);
+  transition: transform .25s ease, box-shadow .25s ease, border-left-color .25s ease;
+}
+@keyframes resultPulse {
+  0% { transform: scale(1); box-shadow: 0 10px 24px rgba(10,25,15,.25); }
+  50% { transform: scale(1.02); box-shadow: 0 14px 32px rgba(199,255,71,.45); }
+  100% { transform: scale(1); box-shadow: 0 10px 24px rgba(10,25,15,.25); }
+}
+.pulse-active {
+  animation: resultPulse 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .result-species { font-size: 36px; font-weight: 600; color: var(--lime); letter-spacing: -.03em; margin: 4px 0 8px; }
@@ -1015,13 +1024,21 @@ SOWUTUOM • ELEV 82M</pre>
             </div>
           </div>
 
-          <div style="margin-top:18px;">
-            <button type="button" class="preset-btn" style="width:100%;height:38px;background:var(--lime);font-size:11px;" onclick="calculateCardiacRisk()">COMPUTE CLINICAL DIAGNOSTIC RISK</button>
+          <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+            <button type="button" id="btn-cardiac-compute" class="preset-btn" style="width:100%;height:42px;background:var(--lime);font-size:11px;font-weight:700;letter-spacing:0.12em;" onclick="calculateCardiacRisk(true)">COMPUTE CLINICAL DIAGNOSTIC RISK</button>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="preset-btn" style="flex:1;font-size:9.5px;padding:7px 4px;text-align:center;" onclick="setCardiacPreset('high')">&bull; Load High Risk Case</button>
+              <button type="button" class="preset-btn" style="flex:1;font-size:9.5px;padding:7px 4px;text-align:center;" onclick="setCardiacPreset('healthy')">&bull; Load Baseline (Low Risk)</button>
+            </div>
           </div>
         </div>
 
         <!-- Live Cardiac Risk Output -->
         <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span class="mono" style="font-size:10px; font-weight:700; letter-spacing:0.1em; color:var(--ink2); text-transform:uppercase;">DIAGNOSTIC RESULTS PANEL</span>
+            <span class="mono" id="heart-live-status" style="font-size:9.5px; color:var(--ink2);">&bull; Real-Time Active</span>
+          </div>
           <div class="result-box" id="heart-result-box" style="border-left-color: var(--danger);">
             <div class="result-header">
               <span class="chip-danger" id="heart-badge">&bull; HIGH CARDIAC RISK</span>
@@ -1785,7 +1802,7 @@ window.setIrisPreset = (sl, sw, pl, pw) => {
 predictIris();
 
 // 2. Cardiac Hemodynamic Risk Engine
-window.calculateCardiacRisk = () => {
+window.calculateCardiacRisk = (isManualClick = false) => {
   const age = parseFloat(document.getElementById('h-age').value) || 54;
   const sex = document.getElementById('h-sex').value;
   const cp = document.getElementById('h-cp').value;
@@ -1851,6 +1868,7 @@ window.calculateCardiacRisk = () => {
   const probText = document.getElementById('heart-prob-text');
   const verdict = document.getElementById('heart-verdict');
   const triggerList = document.getElementById('cardiac-triggers');
+  const statusIndicator = document.getElementById('heart-live-status');
 
   if (isHighRisk) {
     resultBox.style.borderLeftColor = 'var(--danger)';
@@ -1874,7 +1892,67 @@ window.calculateCardiacRisk = () => {
   }
 
   triggerList.innerHTML = triggers.map(t => `<li>${t}</li>`).join('');
+
+  if (statusIndicator) {
+    statusIndicator.textContent = `• Updated Live (${(prob * 100).toFixed(0)}%)`;
+  }
+
+  if (isManualClick && resultBox) {
+    resultBox.classList.remove('pulse-active');
+    void resultBox.offsetWidth; // re-trigger animation
+    resultBox.classList.add('pulse-active');
+
+    const btn = document.getElementById('btn-cardiac-compute');
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = 'DIAGNOSTIC INFERENCE COMPUTED ✓';
+      setTimeout(() => {
+        btn.textContent = orig;
+      }, 1200);
+    }
+  }
 };
+
+window.setCardiacPreset = (profile) => {
+  if (profile === 'high') {
+    document.getElementById('h-age').value = 58;
+    document.getElementById('h-sex').value = 'M';
+    document.getElementById('h-cp').value = 'ASY';
+    document.getElementById('h-bp').value = 145;
+    document.getElementById('h-chol').value = 280;
+    document.getElementById('h-fbs').value = '1';
+    document.getElementById('h-ecg').value = 'ST';
+    document.getElementById('h-hr').value = 120;
+    document.getElementById('h-angina').value = 'Y';
+    document.getElementById('h-oldpeak').value = 2.2;
+    document.getElementById('h-slope').value = 'Flat';
+  } else {
+    document.getElementById('h-age').value = 36;
+    document.getElementById('h-sex').value = 'F';
+    document.getElementById('h-cp').value = 'ATA';
+    document.getElementById('h-bp').value = 115;
+    document.getElementById('h-chol').value = 180;
+    document.getElementById('h-fbs').value = '0';
+    document.getElementById('h-ecg').value = 'Normal';
+    document.getElementById('h-hr').value = 168;
+    document.getElementById('h-angina').value = 'N';
+    document.getElementById('h-oldpeak').value = 0.0;
+    document.getElementById('h-slope').value = 'Up';
+  }
+  calculateCardiacRisk(true);
+};
+
+// Real-time calculation on any field change
+[
+  'h-age', 'h-sex', 'h-cp', 'h-bp', 'h-chol', 'h-fbs',
+  'h-ecg', 'h-hr', 'h-angina', 'h-oldpeak', 'h-slope'
+].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('input', () => calculateCardiacRisk(false));
+    el.addEventListener('change', () => calculateCardiacRisk(false));
+  }
+});
 
 calculateCardiacRisk();
 </script>
